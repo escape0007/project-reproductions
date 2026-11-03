@@ -1,0 +1,468 @@
+{
+  "created_at_utc": "2026-10-31T07:17:13.407417+00:00",
+  "command": [
+    "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/reproduce_models.py",
+    "--output-dir",
+    "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/models"
+  ],
+  "script_sha256": "8b3a9561f3dd247a59b860b040dcda0bac14249c0c18d1d18c088b5278a699d3",
+  "python": "3.10.18 (main, Oct  7 2025, 15:51:21) [Clang 20.1.4 ]",
+  "platform": "macOS-14.3-arm64-arm-64bit",
+  "package_versions": {
+    "autogluon.tabular": "1.4.0",
+    "numpy": "2.1.3",
+    "pandas": "2.3.2",
+    "scipy": "1.15.2",
+    "scikit-learn": "1.7.1",
+    "lightgbm": "4.6.0",
+    "matplotlib": "3.10.5"
+  },
+  "status": "completed",
+  "tasks": [
+    {
+      "task": "fitness",
+      "label": "V_mean__P_mean_log2_enr",
+      "status": "completed",
+      "experiment_type": "pretrained_model_inference_replay",
+      "evaluation_role": "upstream_tuning_set",
+      "independent_generalization_test": false,
+      "caveat": "s2_auto_gb_regressor.py passes test_data as tuning_data during fitting and HPO.",
+      "best_model": "WeightedEnsemble_L2",
+      "available_models": [
+        "LightGBM_38",
+        "WeightedEnsemble_L2"
+      ],
+      "metrics": {
+        "n": 256,
+        "pearson": 0.7982315678214482,
+        "spearman": 0.8013168059052413,
+        "r2": 0.6268158147970785,
+        "rmse": 1.2510643530301444,
+        "mae": 0.9894994616100183,
+        "median_absolute_error": 0.7952328528296742
+      },
+      "all_reference_metrics_match": true,
+      "reference_comparisons": [
+        {
+          "model": "LightGBM_38",
+          "metric": "pearson",
+          "recomputed": 0.7982315678214482,
+          "upstream_reference": 0.7982315678214482,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "spearman",
+          "recomputed": 0.8013168059052413,
+          "upstream_reference": 0.8013168059052413,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "r2",
+          "recomputed": 0.6268158147970785,
+          "upstream_reference": 0.6268158147970785,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "rmse",
+          "recomputed": 1.2510643530301444,
+          "upstream_reference": 1.2510643530301444,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "mae",
+          "recomputed": 0.9894994616100183,
+          "upstream_reference": 0.9894994616100184,
+          "signed_difference": -1.1102230246251565e-16,
+          "absolute_difference": 1.1102230246251565e-16,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "median_absolute_error",
+          "recomputed": 0.7952328528296742,
+          "upstream_reference": 0.7952328528296742,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "pearson",
+          "recomputed": 0.7982315678214482,
+          "upstream_reference": 0.7982315678214482,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "spearman",
+          "recomputed": 0.8013168059052413,
+          "upstream_reference": 0.8013168059052413,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "r2",
+          "recomputed": 0.6268158147970785,
+          "upstream_reference": 0.6268158147970785,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "rmse",
+          "recomputed": 1.2510643530301444,
+          "upstream_reference": 1.2510643530301444,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "mae",
+          "recomputed": 0.9894994616100183,
+          "upstream_reference": 0.9894994616100184,
+          "signed_difference": -1.1102230246251565e-16,
+          "absolute_difference": 1.1102230246251565e-16,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "median_absolute_error",
+          "recomputed": 0.7952328528296742,
+          "upstream_reference": 0.7952328528296742,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        }
+      ],
+      "data_audit": {
+        "train_rows_raw": 6131,
+        "train_rows_finite": 6131,
+        "test_rows_raw": 256,
+        "test_rows_finite": 256,
+        "dropped_train_rows": 0,
+        "dropped_test_rows": 0,
+        "model_original_feature_count": 645,
+        "missing_features": [],
+        "ignored_nonmodel_columns": [
+          "CF",
+          "FC",
+          "HC",
+          "KC",
+          "WC",
+          "WF",
+          "YC",
+          "_ChargeD1050",
+          "_ChargeD1100",
+          "_ChargeD3050",
+          "_ChargeD3075",
+          "_ChargeD3100",
+          "_HydrophobicityC1",
+          "_HydrophobicityD1001",
+          "_HydrophobicityD1025",
+          "_HydrophobicityD1050",
+          "_HydrophobicityD1075",
+          "_HydrophobicityD1100",
+          "_NormalizedVDWVC3",
+          "_NormalizedVDWVD3001",
+          "_NormalizedVDWVD3025",
+          "_NormalizedVDWVD3050",
+          "_NormalizedVDWVD3075",
+          "_NormalizedVDWVD3100",
+          "taugrant1",
+          "taugrant2",
+          "taugrant3",
+          "taugrant4",
+          "taugrant5"
+        ],
+        "train_duplicate_sequences": 0,
+        "test_duplicate_sequences": 0,
+        "train_test_sequence_overlap_count": 0,
+        "train_test_overlap_sequences": []
+      },
+      "validation": {
+        "repeat_predictions_exactly_equal": true,
+        "repeat_predictions_max_abs_diff": 0.0,
+        "checkpoint_files_unchanged": true,
+        "reference_metric_absolute_tolerance": 1e-06
+      },
+      "input_hashes": {
+        "alice_x/ranking/datapack/train_fitness_data.csv": "ce93a1d5e53455435e109172b1211c85ed73629c11bea5129a64b046bbffc76c",
+        "alice_x/ranking/datapack/test_fitness_data.csv": "3905985568cbcc254838ab7eb1f1590624ceadbbf40dec7474d13f82496eda29",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/V_mean__P_mean_log2_enr_leaderboard.csv": "376ef2463452fd6e9c5490dc0d15cf4c629f8dadf7b2e09772aba55be5d0321a"
+      },
+      "checkpoint_hashes": {
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/V_mean__P_mean_log2_enr_fit_summary.json": "f4f6dca5f0f897a7cba3f6e09208b220ea27d19b2e582f0321421996fbff9970",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/V_mean__P_mean_log2_enr_leaderboard.csv": "376ef2463452fd6e9c5490dc0d15cf4c629f8dadf7b2e09772aba55be5d0321a",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/learner.pkl": "9c1eac4525320dee7c79a82e0eefa6f6d21187898d06b84c7b80ce52e7873f31",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/metadata.json": "757188394444a561dad8d8b67b81d889362d7b26feb41dd60abfec6e86405a1e",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/models/LightGBM_38/model.pkl": "e48895ade6411da84637db8b28ba99fd4931c091a97894ce7de029d0fc6e46a2",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/models/WeightedEnsemble_L2/model.pkl": "664115b02b008123ea7f3c2a70a74c34cb357145592443dd514662afb595a259",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/models/WeightedEnsemble_L2/utils/model_template.pkl": "93de12916ee8e229c55aa06b7625641b3a23043ec3de98b2bcc79b8b383cec86",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/models/WeightedEnsemble_L2/utils/oof.pkl": "d29cd15da9757f2659593a207d7ae6619b841cc5b2423832bf1e2ec534270acf",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/models/trainer.pkl": "970e6aed71be43c8da3dcd7d5b8731f8958d7671d94e5cfe262edc44754680e1",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/predictor.pkl": "66eac581737b96939a5b875131616c99f713dfcf767bfd53c0b9e4ceb0996f95",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/utils/attr/LightGBM_38/y_pred_proba_val.pkl": "a9f4ba94d404b014f614eba0d2cd77ce85729e24af80fec0f5bf8b24487f5da9",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/utils/data/X.pkl": "f407d59826b1c40441eb1d80da8d64a1563cc81b1ace19d8984b25fd18877753",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/utils/data/X_val.pkl": "38282a0469ad73f440a634c2e033d6f831aba462eecace82dd1e55f93c5e9d87",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/utils/data/y.pkl": "9f0488ae6000316f664a3b17f885651dcad8d7b1ba5a152250ad46f3ad084edf",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/utils/data/y_val.pkl": "186b814f1929e74377e412d7766f27210d064033439131480a87d7ed0e5cbca3",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/V_mean__P_mean_log2_enr/version.txt": "74b860b3270666137a4d543c3e3d1e4e473d54636f7593d1c17bf693e6540bbe"
+      },
+      "elapsed_seconds": 1.0179835830349475
+    },
+    {
+      "task": "htfr1",
+      "label": "hT_mean__V_mean_log2_enr",
+      "status": "completed",
+      "experiment_type": "pretrained_model_inference_replay",
+      "evaluation_role": "upstream_tuning_set",
+      "independent_generalization_test": false,
+      "caveat": "s2_auto_gb_regressor.py passes test_data as tuning_data during fitting and HPO.",
+      "best_model": "WeightedEnsemble_L2",
+      "available_models": [
+        "LightGBM_38",
+        "WeightedEnsemble_L2"
+      ],
+      "metrics": {
+        "n": 256,
+        "pearson": 0.7466799148903303,
+        "spearman": 0.7086826218814373,
+        "r2": 0.5559407500923773,
+        "rmse": 1.177504734658402,
+        "mae": 0.9032365594451235,
+        "median_absolute_error": 0.7295375726931936
+      },
+      "all_reference_metrics_match": true,
+      "reference_comparisons": [
+        {
+          "model": "LightGBM_38",
+          "metric": "pearson",
+          "recomputed": 0.7466799148903303,
+          "upstream_reference": 0.7466799148903303,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "spearman",
+          "recomputed": 0.7086826218814373,
+          "upstream_reference": 0.7086826218814373,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "r2",
+          "recomputed": 0.5559407500923773,
+          "upstream_reference": 0.5559407500923773,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "rmse",
+          "recomputed": 1.177504734658402,
+          "upstream_reference": 1.177504734658402,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "mae",
+          "recomputed": 0.9032365594451235,
+          "upstream_reference": 0.9032365594451236,
+          "signed_difference": -1.1102230246251565e-16,
+          "absolute_difference": 1.1102230246251565e-16,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "LightGBM_38",
+          "metric": "median_absolute_error",
+          "recomputed": 0.7295375726931936,
+          "upstream_reference": 0.7295375726931936,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "pearson",
+          "recomputed": 0.7466799148903303,
+          "upstream_reference": 0.7466799148903303,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "spearman",
+          "recomputed": 0.7086826218814373,
+          "upstream_reference": 0.7086826218814373,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "r2",
+          "recomputed": 0.5559407500923773,
+          "upstream_reference": 0.5559407500923773,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "rmse",
+          "recomputed": 1.177504734658402,
+          "upstream_reference": 1.177504734658402,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "mae",
+          "recomputed": 0.9032365594451235,
+          "upstream_reference": 0.9032365594451236,
+          "signed_difference": -1.1102230246251565e-16,
+          "absolute_difference": 1.1102230246251565e-16,
+          "tolerance": 1e-06,
+          "status": "matched"
+        },
+        {
+          "model": "WeightedEnsemble_L2",
+          "metric": "median_absolute_error",
+          "recomputed": 0.7295375726931936,
+          "upstream_reference": 0.7295375726931936,
+          "signed_difference": 0.0,
+          "absolute_difference": 0.0,
+          "tolerance": 1e-06,
+          "status": "matched"
+        }
+      ],
+      "data_audit": {
+        "train_rows_raw": 6134,
+        "train_rows_finite": 6134,
+        "test_rows_raw": 256,
+        "test_rows_finite": 256,
+        "dropped_train_rows": 0,
+        "dropped_test_rows": 0,
+        "model_original_feature_count": 648,
+        "missing_features": [],
+        "ignored_nonmodel_columns": [
+          "CW",
+          "FC",
+          "WC",
+          "WF",
+          "YC",
+          "_ChargeD1050",
+          "_ChargeD1100",
+          "_ChargeD3050",
+          "_ChargeD3100",
+          "_HydrophobicityC1",
+          "_HydrophobicityD1001",
+          "_HydrophobicityD1025",
+          "_HydrophobicityD1050",
+          "_HydrophobicityD1075",
+          "_HydrophobicityD1100",
+          "_NormalizedVDWVC3",
+          "_NormalizedVDWVD3001",
+          "_NormalizedVDWVD3025",
+          "_NormalizedVDWVD3050",
+          "_NormalizedVDWVD3075",
+          "_NormalizedVDWVD3100",
+          "taugrant1",
+          "taugrant2",
+          "taugrant3",
+          "taugrant4",
+          "taugrant5"
+        ],
+        "train_duplicate_sequences": 0,
+        "test_duplicate_sequences": 0,
+        "train_test_sequence_overlap_count": 0,
+        "train_test_overlap_sequences": []
+      },
+      "validation": {
+        "repeat_predictions_exactly_equal": true,
+        "repeat_predictions_max_abs_diff": 0.0,
+        "checkpoint_files_unchanged": true,
+        "reference_metric_absolute_tolerance": 1e-06
+      },
+      "input_hashes": {
+        "alice_x/ranking/datapack/train_hT_mean__V_mean_log2_enr_data.csv": "d5a0cd7db545088a19c604dcebca9428f7a4b7c142a28e9341b61d34cb6ecfc1",
+        "alice_x/ranking/datapack/test_hT_mean__V_mean_log2_enr_data.csv": "1797ac7dd33b174b44c504462cccfe6f4eeab8aa4332e3f497e2c668b0c49957",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/hT_mean__V_mean_log2_enr_leaderboard.csv": "2d8f3e2946c66bbcb7638d9f3221ca7a747a1a6f8c1ac05f9c31beb336a344b6"
+      },
+      "checkpoint_hashes": {
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/hT_mean__V_mean_log2_enr_fit_summary.json": "652b1efc2feedca184de34ec58e71e32350a3bebffac7c6b8ca163ecc2cdcee5",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/hT_mean__V_mean_log2_enr_leaderboard.csv": "2d8f3e2946c66bbcb7638d9f3221ca7a747a1a6f8c1ac05f9c31beb336a344b6",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/learner.pkl": "10ef2f9819b2cbd5f23ff1b245251345c762190f8a9067ae77bad50cb96be725",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/metadata.json": "757188394444a561dad8d8b67b81d889362d7b26feb41dd60abfec6e86405a1e",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/LightGBM_38/model.pkl": "af8ece7322ec725ccc64480ea051877f20abc693ac397c3b7e649fbb898a14ec",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/LightGBM_48/model.pkl": "4f80743f6909a8d141a1e34254adb90d5a3b2ef53d5a09369cf9bb972de886dc",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/LightGBM_49/model.pkl": "a41eb491d7c0ee292d6e745540c343f68eaa9ff8981ff8bc6cc8af12c40301f2",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/WeightedEnsemble_L2/model.pkl": "fd3bb2b2112dcd30102c487668c10ca07dc41126d1a4fedd0eee5dab0b71a484",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/WeightedEnsemble_L2/utils/model_template.pkl": "e63a8456fa481238a78860f160ece0f68643aafc04a05a25de96c2a8508fac8a",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/WeightedEnsemble_L2/utils/oof.pkl": "d8c340d375db4244c9a491870702917b9387f36d46f04e39e23658aa0e491b26",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/models/trainer.pkl": "ac784215c95fbb17c325df740b68c53367a902dc874e0c6223628634ab3bea01",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/predictor.pkl": "66eac581737b96939a5b875131616c99f713dfcf767bfd53c0b9e4ceb0996f95",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/attr/LightGBM_38/y_pred_proba_val.pkl": "caa307e1af2347ed2420b54fb9ddbdc65495feed480f2001eaa3930eb35a0394",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/attr/LightGBM_48/y_pred_proba_val.pkl": "ffe54d4782600b50e324126422e14b50e61a0960b0565076162f4b5eceee31a3",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/attr/LightGBM_49/y_pred_proba_val.pkl": "bd811d8bacd19c8ce5be06ebf9c61a92129970b36c3d32bc3e6799fcf916175f",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/data/X.pkl": "cee8a330d657d721aa07d9b5219dd683fdcd328a7b0e9ed8b5fe64877fbb5e5d",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/data/X_val.pkl": "82230dd4a6e4610f7edaf845f3038ccbc3bd50fba28e502af89b24a0154236a8",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/data/y.pkl": "4e64c9ee97cdc0538a1ea4a2446a8dc7382716bcb64f0fda03f3166a89e693d9",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/utils/data/y_val.pkl": "45d67607034df3232a7a54d552a8616c94527b5af7c9e4f591f40ca94867cd31",
+        "alice_x/ranking/gen_model_research/aggregate/hTfR1_model/hT_mean__V_mean_log2_enr/version.txt": "74b860b3270666137a4d543c3e3d1e4e473d54636f7593d1c17bf693e6540bbe"
+      },
+      "elapsed_seconds": 0.4840923330048099
+    }
+  ],
+  "all_reference_metrics_match": true,
+  "validation_status": "matched"
+}

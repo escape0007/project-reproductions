@@ -1,0 +1,6 @@
+{
+  "results/original/ALICE_TOP.csv": "246949026730d01aff709686f9d3de7cfca1230f76a6f262d893c0329a4d6348",
+  "results/models/fitness/predictions.csv": "b4d11b10aa8f0157677145fc499f3bbdc5470966c90e94a372e27e858ff8b13c",
+  "results/models/htfr1/predictions.csv": "e6fae3f71bd734211063d30360fb7501f1584aed3682f2cad5eccedc2a8ee418",
+  "results/analysis/correlation_metrics.csv": "ca996e2c7b8be85d1681ea953e13ac16dc8d70410bd51ab12fcd65487c7903a3"
+}

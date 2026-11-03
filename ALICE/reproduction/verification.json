@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "cross_process_csv_byte_identity": {
+    "results/original/ALICE_TOP.csv": true,
+    "results/models/fitness/predictions.csv": true,
+    "results/models/htfr1/predictions.csv": true,
+    "results/analysis/correlation_metrics.csv": true
+  },
+  "csv_sha256": {
+    "results/original/ALICE_TOP.csv": "246949026730d01aff709686f9d3de7cfca1230f76a6f262d893c0329a4d6348",
+    "results/models/fitness/predictions.csv": "b4d11b10aa8f0157677145fc499f3bbdc5470966c90e94a372e27e858ff8b13c",
+    "results/models/htfr1/predictions.csv": "e6fae3f71bd734211063d30360fb7501f1584aed3682f2cad5eccedc2a8ee418",
+    "results/analysis/correlation_metrics.csv": "ca996e2c7b8be85d1681ea953e13ac16dc8d70410bd51ab12fcd65487c7903a3"
+  },
+  "original_paper_eight_identity_matched": true,
+  "original_paper_prediction_rounding_matched": true,
+  "model_reference_comparisons": 24,
+  "model_reference_max_absolute_difference": 1.1102230246251565e-16,
+  "model_reference_tolerance": 1e-06,
+  "independent_pearson_absolute_difference": 1.1102230246251565e-16,
+  "upstream_tracked_files_unchanged": true,
+  "full_run_seconds": 13.976,
+  "full_run_id": "20261031T151903757710",
+  "script_sha256": {
+    "reproduce_original.py": "1c6a1dccb0b29ba880320f373d5803dfd57edeb3d86c502a67501ebba2cfbb2e",
+    "reproduce_models.py": "8b3a9561f3dd247a59b860b040dcda0bac14249c0c18d1d18c088b5278a699d3",
+    "reproduce_analysis.py": "03059524e2c5e195117fbf397d1cc5d92f7a311d95b6464383f31bead2ab1423",
+    "run_all.py": "fab5c20c94e45af3970724ebfaa6ebb182f1d605b020a6c43732f49aeb4907e3"
+  }
+}

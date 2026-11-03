@@ -1,0 +1,9 @@
+Evaluating fitness on the original tuning set...
+Found 1 mismatches between original and current metadata:
+	WARNING: System mismatch (original=Windows, current=Darwin)
+{"task": "fitness", "n": 256, "pearson": 0.7982315678214482, "spearman": 0.8013168059052413, "r2": 0.6268158147970785, "rmse": 1.2510643530301444, "mae": 0.9894994616100183, "median_absolute_error": 0.7952328528296742, "matches_upstream": true}
+Evaluating htfr1 on the original tuning set...
+Found 1 mismatches between original and current metadata:
+	WARNING: System mismatch (original=Windows, current=Darwin)
+{"task": "htfr1", "n": 256, "pearson": 0.7466799148903303, "spearman": 0.7086826218814373, "r2": 0.5559407500923773, "rmse": 1.177504734658402, "mae": 0.9032365594451235, "median_absolute_error": 0.7295375726931936, "matches_upstream": true}
+Saved /Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/models/metrics.json

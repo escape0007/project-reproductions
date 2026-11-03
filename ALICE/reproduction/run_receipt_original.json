@@ -1,0 +1,114 @@
+{
+  "run_id": "20261031T151455434507",
+  "started_at": "2026-10-31T15:14:55.434507+08:00",
+  "timezone": "Asia/Macau",
+  "platform": "macOS-14.3-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "stages": [
+    {
+      "stage": "original",
+      "command": [
+        "/Users/zhuang/Desktop/项目复现/ALICE/.venv-original/bin/python",
+        "-u",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/reproduce_original.py",
+        "--output-dir",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/original"
+      ],
+      "log": "reproduction/logs/original.log",
+      "script_sha256": "1c6a1dccb0b29ba880320f373d5803dfd57edeb3d86c502a67501ebba2cfbb2e",
+      "pid": 97231,
+      "status": "completed",
+      "exit_code": 0,
+      "elapsed_seconds": 84.486,
+      "validation_status": "paper_sequences_matched",
+      "artifacts": [
+        {
+          "path": "reproduction/results/original/00_input.csv",
+          "bytes": 19915,
+          "sha256": "3f1f54a53214220a86678b0919a4403d8b044dceb1a638f46444d5967372c334"
+        },
+        {
+          "path": "reproduction/results/original/ALICE_TOP.csv",
+          "bytes": 1675,
+          "sha256": "246949026730d01aff709686f9d3de7cfca1230f76a6f262d893c0329a4d6348"
+        },
+        {
+          "path": "reproduction/results/original/EA_Top.csv",
+          "bytes": 2175,
+          "sha256": "728376d2317cb6a31b51db0982e6c69b73586f97fb68610cca8111b443355ec0"
+        },
+        {
+          "path": "reproduction/results/original/FE_score_Top500.csv",
+          "bytes": 38634,
+          "sha256": "6641a0f4b76b55e7248ffe44978d9057c0083e38118cd3b8c0c515cb41a0c7e6"
+        },
+        {
+          "path": "reproduction/results/original/LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+          "bytes": 58546,
+          "sha256": "08878142c2ba6beb63d700ea5b8c4fb26e9da9b8a4342324af694e04163a092b"
+        },
+        {
+          "path": "reproduction/results/original/LY6C1_model_LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+          "bytes": 77610,
+          "sha256": "9e934d6d44fcf927bad4a8a8297fca1df4e43a1f48701506f4691794e284cc80"
+        },
+        {
+          "path": "reproduction/results/original/Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+          "bytes": 39162,
+          "sha256": "894c6442d0eefc774e0f252375f1d450b976cd22b2c7e6015aab43f5310843c7"
+        },
+        {
+          "path": "reproduction/results/original/Prod_Fit_Top100.csv",
+          "bytes": 7813,
+          "sha256": "90ef69dfbf0463316ab2ba0242d63554f392626b17fd986e62d3f890ff87100a"
+        },
+        {
+          "path": "reproduction/results/original/feature_columns.json",
+          "bytes": 10447,
+          "sha256": "5e6e13677da883162ceeaecd1ae0dfb8d3e901283c626c6a641fb14d39f7fdda"
+        },
+        {
+          "path": "reproduction/results/original/features.csv",
+          "bytes": 3243982,
+          "sha256": "b9f6f15115812a5c9822f5df26bf690f6b88cecac676f585510b78b14a6d33c6"
+        },
+        {
+          "path": "reproduction/results/original/metrics.json",
+          "bytes": 8896,
+          "sha256": "e46513891c76446146dafa5074bfd2e2113950d8272a7c1fc90a761826519106"
+        },
+        {
+          "path": "reproduction/results/original/multi_tar_TOP.csv",
+          "bytes": 2231,
+          "sha256": "e7943f6754af179afd3455f8d1dadae55bf87d62ab9640511283a0beea278206"
+        },
+        {
+          "path": "reproduction/results/original/paper_table_s13_comparison.csv",
+          "bytes": 2269,
+          "sha256": "27f489050a884ae32775a9f8c016d5278ee2f1c28ccbb9fb69cb7eafccc3b7df"
+        },
+        {
+          "path": "reproduction/results/original/selection_counts.csv",
+          "bytes": 109,
+          "sha256": "1a9a4d04b048148d19e22609d03c3ec77fa423d73a6b16e18d08d297ea337246"
+        },
+        {
+          "path": "reproduction/results/original/selection_counts.pdf",
+          "bytes": 16034,
+          "sha256": "32c6ac1e075df62fefdfbc1e760a5e89bfe58ec83772b065f6adac254680fb6f"
+        },
+        {
+          "path": "reproduction/results/original/selection_counts.png",
+          "bytes": 56467,
+          "sha256": "53b3da9ec17cd14c061f67726b53513401a6cfa1812cafe703e2b20ed0fffbbb"
+        }
+      ]
+    }
+  ],
+  "timeout_seconds_per_stage": 600,
+  "scope": "Published-input replay and archived-data analysis; no de novo pretraining or wet-lab reproduction",
+  "upstream_commit": "e91627ff7fdb9df6637fa1047e8f9f7c9bc51141",
+  "tracked_changes": "",
+  "finished_at": "2026-10-31T15:16:19.988594+08:00",
+  "status": "completed"
+}

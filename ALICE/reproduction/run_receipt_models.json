@@ -1,0 +1,89 @@
+{
+  "run_id": "20261031T151702564122",
+  "started_at": "2026-10-31T15:17:02.564122+08:00",
+  "timezone": "Asia/Macau",
+  "platform": "macOS-14.3-arm64-arm-64bit",
+  "machine": "arm64",
+  "stages": [
+    {
+      "stage": "models",
+      "command": [
+        "/Users/zhuang/Desktop/项目复现/ALICE/.venv/bin/python",
+        "-u",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/reproduce_models.py",
+        "--output-dir",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/models"
+      ],
+      "log": "reproduction/logs/models.log",
+      "script_sha256": "8b3a9561f3dd247a59b860b040dcda0bac14249c0c18d1d18c088b5278a699d3",
+      "pid": 97476,
+      "status": "completed",
+      "exit_code": 0,
+      "elapsed_seconds": 93.5,
+      "validation_status": "matched",
+      "artifacts": [
+        {
+          "path": "reproduction/results/models/fitness/leaderboard_comparison.csv",
+          "bytes": 1374,
+          "sha256": "115d04a8b0b94c986db1ae8472df81d8a9c82407dc5d73d870bc141a8dd5edd7"
+        },
+        {
+          "path": "reproduction/results/models/fitness/model_metrics.csv",
+          "bytes": 337,
+          "sha256": "2f4a7a7938ee70d878508b56a0d8b3cc4737d1d0c1f0b528630a8d544113e58a"
+        },
+        {
+          "path": "reproduction/results/models/fitness/predictions.csv",
+          "bytes": 28713,
+          "sha256": "b4d11b10aa8f0157677145fc499f3bbdc5470966c90e94a372e27e858ff8b13c"
+        },
+        {
+          "path": "reproduction/results/models/fitness/predictions_scatter.pdf",
+          "bytes": 22726,
+          "sha256": "0ef8f61d7bcfd912ec3763656b5add3621cdda646254787ccd919ee42c3c3a30"
+        },
+        {
+          "path": "reproduction/results/models/fitness/predictions_scatter.png",
+          "bytes": 132410,
+          "sha256": "8dd615a55563f20f6228f27f4775ba72b92182bd50b2f55284a3ce5e3f260cdf"
+        },
+        {
+          "path": "reproduction/results/models/htfr1/leaderboard_comparison.csv",
+          "bytes": 1368,
+          "sha256": "02db25630b5f310ef8e9b9b50297fbb44cdd512ecb5077925813a39e95f5af43"
+        },
+        {
+          "path": "reproduction/results/models/htfr1/model_metrics.csv",
+          "bytes": 335,
+          "sha256": "a5cad1ba56d44f18ffb2c1ad9f205ce91deee8e9762c57ccae9b539a5b85bde9"
+        },
+        {
+          "path": "reproduction/results/models/htfr1/predictions.csv",
+          "bytes": 28797,
+          "sha256": "e6fae3f71bd734211063d30360fb7501f1584aed3682f2cad5eccedc2a8ee418"
+        },
+        {
+          "path": "reproduction/results/models/htfr1/predictions_scatter.pdf",
+          "bytes": 21561,
+          "sha256": "2c1af877a3aedee7705b52704362a7b98e672e52ebd1a7f4897deda0254fa553"
+        },
+        {
+          "path": "reproduction/results/models/htfr1/predictions_scatter.png",
+          "bytes": 124128,
+          "sha256": "634aff1bcf499491b32d37ea03092e7794155129b91a18c1773745618bf447f4"
+        },
+        {
+          "path": "reproduction/results/models/metrics.json",
+          "bytes": 21266,
+          "sha256": "d0cf755c0bd7a339e114dbd05f47ac3d25989a1c5c1c2de60ab409cb14b4b5c0"
+        }
+      ]
+    }
+  ],
+  "timeout_seconds_per_stage": 1800,
+  "scope": "Published-input replay and archived-data analysis; no de novo pretraining or wet-lab reproduction",
+  "upstream_commit": "e91627ff7fdb9df6637fa1047e8f9f7c9bc51141",
+  "tracked_changes": "",
+  "finished_at": "2026-10-31T15:18:36.133440+08:00",
+  "status": "completed"
+}

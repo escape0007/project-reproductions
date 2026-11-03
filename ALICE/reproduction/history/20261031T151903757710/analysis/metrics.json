@@ -1,0 +1,1174 @@
+{
+  "status": "COMPLETED_ARCHIVED_COHORT_REANALYSIS",
+  "not_claimed": [
+    "Model training",
+    "Fresh checkpoint inference",
+    "Regenerated evolution",
+    "Exact reproduction of missing original plotting input",
+    "Wet-lab replication"
+  ],
+  "random_seed": 2026,
+  "method": {
+    "upstream_script": "code_for_analysis/alice_x_predict_power.py",
+    "missing_upstream_input": "code_for_analysis/data/split_files/lib2_ALICE_new.csv",
+    "missing_raw_columns": [
+      "virus3_mean",
+      "plasmid_mean"
+    ],
+    "fitness": "Supplied fitness retained; checked against log2(V_mean_P_mean_enrichment). This is not asserted to equal the missing virus3_mean/plasmid_mean ratio.",
+    "receptor_measurement": "huTfR1_fc_log2_enrichment (the exact upstream column, distinct from huTfR1fc_log2_enrichment)",
+    "alternate_measurement_sensitivity": "Also report huTfR1fc_log2_enrichment and its mean pair separately. The mean-pair correlation on the processed ALICE-X cohort rounds to the paper's Fig. 6F value of 0.523, but matching a rounded number alone does not establish assay correspondence.",
+    "mean_pair": "(fitness + receptor)/2 for both observations and archived predictions",
+    "correlation": "Pairwise finite filtering; Pearson, Spearman, sklearn.metrics.r2_score(y_true,y_pred). R² is not squared Pearson r.",
+    "cohort_selection": "All rows in each supplied file; no removal of controls or duplicates beyond upstream's separate processed cohorts.",
+    "trajectory_selection": "First 500 rows in original order per *_pred.csv; not sorted by a score. This matches the row-limit convention in plot_evolve_trajectory.py."
+  },
+  "limitations": [
+    "All prediction values were provided by the repository; this script performs no new model inference.",
+    "The original plotting input is absent, so differences from paper correlations cannot be attributed solely to numerical implementation.",
+    "Two distinct receptor measurement columns coexist. Both are analysed, with explicit names. This program has not established which assay maps to which column from experimental metadata; numeric agreement with the paper is not proof of that mapping.",
+    "Sequence overlap is checked only against the supplied combined 6387-row training/test file. Zero overlap does not prove independence from every model training or selection dataset.",
+    "Cohorts contain different selected sequences. Cross-cohort correlations are descriptive and not a controlled comparison of predictive model quality.",
+    "Archived sequence rows and epochs are dependent; no statistical significance or causal improvement is claimed.",
+    "R² can be negative even when Pearson correlation is positive; no calibration model is fitted here."
+  ],
+  "cohorts": [
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "rows": 500,
+      "unique_sequences": 500,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 0,
+      "fitness_logratio_finite_pairs": 500,
+      "fitness_logratio_max_absolute_difference": 4.999306940645099e-10,
+      "source": "code_for_analysis/data/processed/lib2_ALICE_x.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "rows": 499,
+      "unique_sequences": 499,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 0,
+      "fitness_logratio_finite_pairs": 499,
+      "fitness_logratio_max_absolute_difference": 4.975293510511847e-10,
+      "source": "code_for_analysis/data/processed/lib2_ALICE.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "rows": 500,
+      "unique_sequences": 500,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 0,
+      "fitness_logratio_finite_pairs": 500,
+      "fitness_logratio_max_absolute_difference": 4.981327572650684e-10,
+      "source": "code_for_analysis/data/processed/lib2_ST_Ranking.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "rows": 500,
+      "unique_sequences": 500,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 0,
+      "fitness_logratio_finite_pairs": 500,
+      "fitness_logratio_max_absolute_difference": 4.98418306627002e-10,
+      "source": "code_for_analysis/data/processed/lib2_ST.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "rows": 500,
+      "unique_sequences": 500,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 0,
+      "fitness_logratio_finite_pairs": 500,
+      "fitness_logratio_max_absolute_difference": 4.986848156640633e-10,
+      "source": "code_for_analysis/data/processed/lib2_Mutate.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "rows": 501,
+      "unique_sequences": 501,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 1,
+      "fitness_logratio_finite_pairs": 501,
+      "fitness_logratio_max_absolute_difference": 4.999306940645099e-10,
+      "source": "code_for_analysis/data/split_files/lib2_ALICE_x_with_Control.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "rows": 500,
+      "unique_sequences": 500,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 1,
+      "fitness_logratio_finite_pairs": 500,
+      "fitness_logratio_max_absolute_difference": 4.975293510511847e-10,
+      "source": "code_for_analysis/data/split_files/lib2_ALICE_with_Control.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "rows": 501,
+      "unique_sequences": 501,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 1,
+      "fitness_logratio_finite_pairs": 501,
+      "fitness_logratio_max_absolute_difference": 4.981327572650684e-10,
+      "source": "code_for_analysis/data/split_files/lib2_ST_Ranking_with_Control.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "rows": 501,
+      "unique_sequences": 501,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 1,
+      "fitness_logratio_finite_pairs": 501,
+      "fitness_logratio_max_absolute_difference": 4.98418306627002e-10,
+      "source": "code_for_analysis/data/split_files/lib2_ST_with_Control.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "rows": 501,
+      "unique_sequences": 501,
+      "duplicate_rows": 0,
+      "overlap_rows_with_supplied_train_and_test": 1,
+      "fitness_logratio_finite_pairs": 501,
+      "fitness_logratio_max_absolute_difference": 4.986848156640633e-10,
+      "source": "code_for_analysis/data/split_files/lib2_Mutate_with_Control.csv",
+      "selection": "All supplied rows, original order; no deduplication or score-based filtering."
+    }
+  ],
+  "metrics": [
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.47000274000753367,
+      "spearman": 0.4883342733370934,
+      "r2": -1.980894136970814
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4265655769023159,
+      "spearman": 0.3997606710426841,
+      "r2": -1.2888984073014154
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.42346835296338503,
+      "spearman": 0.40027830511322043,
+      "r2": -2.2393339820853035
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4626820859620906,
+      "spearman": 0.37223390493561975,
+      "r2": -2.2024570417379805
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE-X",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5228407872062215,
+      "spearman": 0.5051534446137784,
+      "r2": -3.0299909281136737
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 499,
+      "excluded_nonfinite": 0,
+      "pearson": 0.3651763816152759,
+      "spearman": 0.3342657362918608,
+      "r2": -2.733656191954246
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 499,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4206302724257859,
+      "spearman": 0.40516203491319985,
+      "r2": -1.462951844223125
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 499,
+      "excluded_nonfinite": 0,
+      "pearson": 0.41251000742578325,
+      "spearman": 0.418876210251829,
+      "r2": -2.818975849718149
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 499,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4010736706544641,
+      "spearman": 0.36705236979984057,
+      "r2": -2.1311321627560393
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ALICE",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 499,
+      "excluded_nonfinite": 0,
+      "pearson": 0.34283514544984517,
+      "spearman": 0.3174397952531569,
+      "r2": -3.9865090241087593
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4340163101784623,
+      "spearman": 0.4250975723902895,
+      "r2": -2.7180694671648618
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5507016445843049,
+      "spearman": 0.5443295693182773,
+      "r2": -0.8559922384312502
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.33984447577152754,
+      "spearman": 0.3231523646094584,
+      "r2": -2.1209239248775447
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4443592950781974,
+      "spearman": 0.4566536666146665,
+      "r2": -1.9931791478281768
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST + Ranking",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.38858721201289753,
+      "spearman": 0.3560082080328321,
+      "r2": -3.388692723762449
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.6514795658673553,
+      "spearman": 0.6404747218988875,
+      "r2": -1.2399656804367445
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5370014921255677,
+      "spearman": 0.590318073272293,
+      "r2": -3.212141374329188
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.6424906022739243,
+      "spearman": 0.7235195660782643,
+      "r2": -3.546630246775753
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.0938788738391994,
+      "spearman": -0.0021034644138576554,
+      "r2": -4.860581383130674
+    },
+    {
+      "cohort_set": "processed",
+      "method": "ST",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.282826318042585,
+      "spearman": 0.2918619034476138,
+      "r2": -7.934677543832285
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4271241653358264,
+      "spearman": 0.4387926991707967,
+      "r2": -2.940195935993459
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5521104648323284,
+      "spearman": 0.4902962331849327,
+      "r2": -3.184377993541342
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.2747498838526721,
+      "spearman": 0.301935703742815,
+      "r2": -5.661799057031175
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.3986270747978921,
+      "spearman": 0.26727898911595643,
+      "r2": -3.658792971828328
+    },
+    {
+      "cohort_set": "processed",
+      "method": "Random mutation",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.11781514185116246,
+      "spearman": 0.10674522698090791,
+      "r2": -6.174065747164707
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4640013579413238,
+      "spearman": 0.4843432497554692,
+      "r2": -2.0226305329441683
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4291709723741184,
+      "spearman": 0.40213660328744905,
+      "r2": -1.2855244791339504
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.42383746255310295,
+      "spearman": 0.401948421881337,
+      "r2": -2.2480061082638993
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4670785772739099,
+      "spearman": 0.37546274781115063,
+      "r2": -2.1804196415583585
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE-X",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5264535077278671,
+      "spearman": 0.5075765918362479,
+      "r2": -3.0122119592253567
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.3615671428941378,
+      "spearman": 0.33116465265861067,
+      "r2": -2.7714230780741675
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4238920330190768,
+      "spearman": 0.40758787035148136,
+      "r2": -1.4573510814981852
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.41386603765185803,
+      "spearman": 0.42072792291169164,
+      "r2": -2.8237056831230194
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.40691130062612846,
+      "spearman": 0.37037476149904597,
+      "r2": -2.108142634143291
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ALICE",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 500,
+      "excluded_nonfinite": 0,
+      "pearson": 0.3512265810912329,
+      "spearman": 0.32100637202548815,
+      "r2": -3.9609882867827393
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.42971390657998876,
+      "spearman": 0.4208723906768137,
+      "r2": -2.7589828560797747
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5522278029720992,
+      "spearman": 0.5461144642984946,
+      "r2": -0.8531737823935621
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.34077593992766086,
+      "spearman": 0.32510857170121915,
+      "r2": -2.1279956727552904
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.45039272567810906,
+      "spearman": 0.4594947157477873,
+      "r2": -1.9708108714114863
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST + Ranking",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.3955527358305405,
+      "spearman": 0.3593614046806785,
+      "r2": -3.3670955343229263
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.6500052349963467,
+      "spearman": 0.6380682777870553,
+      "r2": -1.2592233323392001
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5478115177389818,
+      "spearman": 0.5927328768757306,
+      "r2": -3.070814225858764
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.6483595395082364,
+      "spearman": 0.7250273635994944,
+      "r2": -3.495762058693
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.11944771255793982,
+      "spearman": 0.003849416704439726,
+      "r2": -4.593501621572872
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "ST",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.2996106147117991,
+      "spearman": 0.296039792924112,
+      "r2": -7.623681959813354
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "target": "fitness",
+      "prediction_column": "fitness prediction",
+      "measurement_column": "fitness",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4242193714894344,
+      "spearman": 0.4357992222725864,
+      "r2": -2.978359769305835
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "target": "receptor",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1_fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.5576076762082224,
+      "spearman": 0.49325638762316015,
+      "r2": -3.1499902893553697
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "target": "mean_pair",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.2858438610356029,
+      "spearman": 0.30574468592695087,
+      "r2": -5.636210928116704
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "target": "receptor_alternate",
+      "prediction_column": "hTFR1 enrichment prediction",
+      "measurement_column": "huTfR1fc_log2_enrichment",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.4080560926793484,
+      "spearman": 0.2714550182503519,
+      "r2": -3.5986212624854277
+    },
+    {
+      "cohort_set": "with_control",
+      "method": "Random mutation",
+      "target": "mean_pair_alternate",
+      "prediction_column": "prediction_mean",
+      "measurement_column": "measurement_mean_alternate",
+      "n": 501,
+      "excluded_nonfinite": 0,
+      "pearson": 0.13991187004264222,
+      "spearman": 0.11161762530715463,
+      "r2": -6.093876572044933
+    }
+  ],
+  "trajectory_epochs": 65,
+  "sources": [
+    {
+      "path": "code_for_analysis/data/all_train_and_tst_data.csv",
+      "bytes": 835047,
+      "sha256": "bc1d3b3cdde94418cb7b587858c23de6ca09f4a74da339051446e4920dff8b55"
+    },
+    {
+      "path": "code_for_analysis/data/processed/lib2_ALICE_x.csv",
+      "bytes": 180538,
+      "sha256": "9f90bbb8f24162e0047a6b790c5e8bdc40f3a65f2d03f007c3683a070323c6be"
+    },
+    {
+      "path": "code_for_analysis/data/processed/lib2_ALICE.csv",
+      "bytes": 176869,
+      "sha256": "a44ea2c4d333307ee48df61918dd2a70fa0318fe369efa8853b77255c143c6f2"
+    },
+    {
+      "path": "code_for_analysis/data/processed/lib2_ST_Ranking.csv",
+      "bytes": 178127,
+      "sha256": "5cef1ee181e3215ac30339324d148bfa5d4b1b1d2433cd8dc5098db8b8606e24"
+    },
+    {
+      "path": "code_for_analysis/data/processed/lib2_ST.csv",
+      "bytes": 170593,
+      "sha256": "cb426a7de0526b98854ab7611fd00af87e340d2adcd7d45dab6b6fad3e593302"
+    },
+    {
+      "path": "code_for_analysis/data/processed/lib2_Mutate.csv",
+      "bytes": 175229,
+      "sha256": "18ef0cc8642747d6aad6baa30121698b85d046fdec728ccbba186bc7dcde52a2"
+    },
+    {
+      "path": "code_for_analysis/data/split_files/lib2_ALICE_x_with_Control.csv",
+      "bytes": 180913,
+      "sha256": "5fa21e3a32b4f9a44adc3da61cee752e77f7b6e3431263c2cb29b22e94576074"
+    },
+    {
+      "path": "code_for_analysis/data/split_files/lib2_ALICE_with_Control.csv",
+      "bytes": 177244,
+      "sha256": "c20c006670534e32b4193384b31b3a9c24ad48bf444f5c65740719bbe7cab668"
+    },
+    {
+      "path": "code_for_analysis/data/split_files/lib2_ST_Ranking_with_Control.csv",
+      "bytes": 178502,
+      "sha256": "6c588f0482ea21a62e59ed722dffb8f42a3ade619819ef03d9329fbc47aebeb9"
+    },
+    {
+      "path": "code_for_analysis/data/split_files/lib2_ST_with_Control.csv",
+      "bytes": 170968,
+      "sha256": "9ad660da04baebd36176fbb79c0f81210729535ce5171f30784f8c10f19036b1"
+    },
+    {
+      "path": "code_for_analysis/data/split_files/lib2_Mutate_with_Control.csv",
+      "bytes": 175604,
+      "sha256": "df0a985bc956ba2a3fb530efae596e1988dbfd886ae4f81c7ed88f234d96f6d0"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-0_pred.csv",
+      "bytes": 116113,
+      "sha256": "230b281e92bea848e5c4a29f2af4dd6095e9e555f33914757a43170ca79190c7"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-1_pred.csv",
+      "bytes": 116314,
+      "sha256": "419a52c070677fbf2b3e18b031cd5825cee5fb000c5e0ab86315f1299c080af6"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-2_pred.csv",
+      "bytes": 116971,
+      "sha256": "97fd47df6f72c14ad87befe9fd74d96c2dfb87fe3e0855dc3531b3947215cf03"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-3_pred.csv",
+      "bytes": 115344,
+      "sha256": "cc7840d93820bad124769f225f91a6f3cc8125407707250fd2b4532325c1ecd6"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-4_pred.csv",
+      "bytes": 115807,
+      "sha256": "2c4cc008034cf33668faf135a6d9e62d0fac595e8c1cd0a24c3881f2d0db95b8"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-5_pred.csv",
+      "bytes": 116304,
+      "sha256": "acdbcac5e97c7828310c1e2c57fa54dcb7795661d8f9881d39336e844c872f07"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-6_pred.csv",
+      "bytes": 116723,
+      "sha256": "922895b9966838f3652cede9abd6e82291e41b1e94a603f1fce317a22065a61f"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-7_pred.csv",
+      "bytes": 115214,
+      "sha256": "1fdc025a4d8280b823874c0ae1df050d6f25d5ef3a4dc4bc41c90a5e34ecbb81"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-8_pred.csv",
+      "bytes": 115097,
+      "sha256": "da5911827d0ace99b79d306af28e9604205ee37d78068ac37d8cbf0ac146c418"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-9_pred.csv",
+      "bytes": 116200,
+      "sha256": "35070ca37858c6e02617e13f4b796b854b6f9c2199d97d78b120530a829cf86b"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-10_pred.csv",
+      "bytes": 115397,
+      "sha256": "c868aff6aca4d7b2769bfac30e15be79aa82c5e78b37e8a8e10a068c07121480"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-11_pred.csv",
+      "bytes": 117099,
+      "sha256": "1e16a306a77554676695c26acab72b792f023d2a3cec060a373cd89b15c634bb"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-12_pred.csv",
+      "bytes": 115507,
+      "sha256": "85d34cf27bbec5e4b78414ccca6247a81d23db78eea6139fa74202b5dd3b3e23"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-13_pred.csv",
+      "bytes": 115306,
+      "sha256": "5a88d337f9259f601f372bc572aeaf1045540de3b8d506f4a5af06bae41bd6f4"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-14_pred.csv",
+      "bytes": 114968,
+      "sha256": "92ce806b7ddd11a13c236b98779aaa87275795fdcf4b7ed71f48640552703c2c"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-15_pred.csv",
+      "bytes": 115226,
+      "sha256": "80213d4ae8d84434f91eb3c050dfb2864b800e575bef6811167322dbe823397c"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-16_pred.csv",
+      "bytes": 114309,
+      "sha256": "f4edf3fb7563baf43c7984b36f6ff7cb04340b29cf8144538b250da6ca8e5ea5"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-17_pred.csv",
+      "bytes": 115319,
+      "sha256": "9cc045a72b7e11dfe02abca79855cc8987e4740ea2b6b743f95d7019533d5faf"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-18_pred.csv",
+      "bytes": 115333,
+      "sha256": "8a33903cd4707c4053288c0f316a88546ec46f5be670d53b1f76c6c65d1d5e6a"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_sum/seq-epoch-19_pred.csv",
+      "bytes": 96222,
+      "sha256": "921c460956093b5a7c1525fa3ee7e673d6a3fda91ab43de222afaf6d58a66d1d"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-0_pred.csv",
+      "bytes": 118934,
+      "sha256": "fa6e38c3bba663d89d3f25e3aac4a989194a63641660fe9bb96d6754ee827b53"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-1_pred.csv",
+      "bytes": 119425,
+      "sha256": "d9fa32c3b4b148c367cfcc99aaa4e5968ef3346e02ada2348fb3a5681b039fad"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-2_pred.csv",
+      "bytes": 120140,
+      "sha256": "8b3746dea25093ff6a7ffd43c103cd4f0af71dc2262d0f3c07f73fcd96bc8261"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-3_pred.csv",
+      "bytes": 119256,
+      "sha256": "c23027e0e241fb158ea868d511857bdf36c0b7fb2fdbf5274ac54a56f75460a8"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-4_pred.csv",
+      "bytes": 119804,
+      "sha256": "28977ef992613b5e73926a60d12e349d38197ecf7bdaf51f7666f12a1cf19da4"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-5_pred.csv",
+      "bytes": 120005,
+      "sha256": "cdc6ecddfe5a33ea8a0eadb1ab397eb5a6270a72c4addd915a8c1b260c9e26ce"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-6_pred.csv",
+      "bytes": 120240,
+      "sha256": "9ab117d173e135334cd675e52f868477282f1761398b7ace6b1d852c8b993ed1"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-7_pred.csv",
+      "bytes": 119810,
+      "sha256": "9d5072bcc64e6987e3b456e0e02f8951f216b407571529a82609ebfb9f595b49"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-8_pred.csv",
+      "bytes": 119750,
+      "sha256": "fd632ccdff1cbeb4603f267a2f2c2e8fedba96efc0359a59dbb15521613a9a4b"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-9_pred.csv",
+      "bytes": 120457,
+      "sha256": "4ce47b4dfe5033574276112419196983643483e8afd27ae41bfb14bbd2be3b67"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-10_pred.csv",
+      "bytes": 119959,
+      "sha256": "5d92eb5891fa5185e51007e694b68c4ca45dfeb939bd0b71c148fc44f3bc30c1"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-11_pred.csv",
+      "bytes": 120139,
+      "sha256": "380fb3a6eabe009718d97df73e7b3e3b34a9a538df7fc1a985952c9364c3ab70"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-12_pred.csv",
+      "bytes": 119618,
+      "sha256": "bf81c5f99325c0564a8d06d05eb31885dc1ba9f0b2017b95deb7decdc037481b"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-13_pred.csv",
+      "bytes": 119971,
+      "sha256": "895ef2f5301e2163bd07103b78301085dc1ff5efcc9eb7871412d578006499fd"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-14_pred.csv",
+      "bytes": 119801,
+      "sha256": "b46f1e3c44cffa31e5f4d477b48e3bb1a831e5d7b59474eef1f54b804476be27"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-15_pred.csv",
+      "bytes": 119648,
+      "sha256": "e6a9b8db3e6059f58d3585f992f5fa5f50337aae377360f7d1894699f86eaefc"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-16_pred.csv",
+      "bytes": 119288,
+      "sha256": "347f2d0d0b1a1ae6c12a9485da6fca410104619ddbc6d07fb1812bb251509944"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-17_pred.csv",
+      "bytes": 119797,
+      "sha256": "b8e7edeb46a4b9555b32d434c0cc114fd5e31262f0ad4d375c01f23f3019289a"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-18_pred.csv",
+      "bytes": 120090,
+      "sha256": "944f9d567c3625a2296da3ee93c624143901238fd7b8bd38bcd1fb8e89616e57"
+    },
+    {
+      "path": "code_for_analysis/data/stage2_min/seq-epoch-19_pred.csv",
+      "bytes": 119539,
+      "sha256": "d2e27ee24bf058a0dfa1b19e3551a23049ff446d61a21c5f546b78aae72c3105"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-0_pred.csv",
+      "bytes": 66800,
+      "sha256": "31a622e01b4307a89a2eae3095eabc91c8899a5b0d9491ad2966332170b4a288"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-1_pred.csv",
+      "bytes": 66758,
+      "sha256": "2d2dd70a7978339d390c480c599e9d2674410dec3c9f8960ecd890f6da531112"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-2_pred.csv",
+      "bytes": 66810,
+      "sha256": "73a28488dc500e0fe7a291ea25ef5b353bcdd7934a7f3d91e8c0c68da73c7266"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-3_pred.csv",
+      "bytes": 66853,
+      "sha256": "c03570504653212b6d668520684c89d34104741c40060b5abc9db1fe3cb8a874"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-4_pred.csv",
+      "bytes": 66965,
+      "sha256": "1a0eda927c8d767b90fd8f916789810652c4898b4d6852b8bac7d7f260285c79"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-5_pred.csv",
+      "bytes": 66920,
+      "sha256": "ba51ad5d26778fc46791efe6628026b17963c9e4d744b653d39e9fae0cea6d62"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-6_pred.csv",
+      "bytes": 66987,
+      "sha256": "b5736b1f185e7f19d75a1b6c7fb1acb041f6f46ba4c9a770f5cce9f257026283"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-7_pred.csv",
+      "bytes": 67088,
+      "sha256": "305102996547b667ff3fac01968c6e0656a1a1caddacbedf369ae950682d0e56"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-8_pred.csv",
+      "bytes": 67038,
+      "sha256": "74563c1d0648c5c3bba36f98d13b1bf52d899ba88306f62ab55b1e457c559d62"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-9_pred.csv",
+      "bytes": 66985,
+      "sha256": "1a1f010485520b500c40717037ab2419ae097706aa9b5d2faa8f1b84c426b91f"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-10_pred.csv",
+      "bytes": 67013,
+      "sha256": "31338de133922e845fb52c87de4e6b27bd6b91926eb92d13c864b9f52d13cfcd"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-11_pred.csv",
+      "bytes": 67094,
+      "sha256": "028a05ae45e3761745b7ec88252764cd2ef04c2d544b310ec240c5e28131ff7e"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-12_pred.csv",
+      "bytes": 66999,
+      "sha256": "7c3caaae6048ef9bb00958013d5936203006ef834db0bd35f2b648c75cfee791"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-13_pred.csv",
+      "bytes": 66890,
+      "sha256": "21496140aa32770d38b05608028bf75e41e4e8374524bb576d2cd4c500ec36f8"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-14_pred.csv",
+      "bytes": 66849,
+      "sha256": "d9a6046604e859be3d9e508aec8c22a31fc32a425cfb4f53d771576a43b69682"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-15_pred.csv",
+      "bytes": 66783,
+      "sha256": "c4808bf9ed8e45758d6cfbbf5827e5a73180cb1476b70606295f72022e439d10"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-16_pred.csv",
+      "bytes": 66640,
+      "sha256": "d3929522b6917de598ef15e618089df131983033783305d16f74acf1d0a62463"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-17_pred.csv",
+      "bytes": 66439,
+      "sha256": "e4c9e7a7b24170b56fb51eba551a1930f065ce348bed9a06abaa2c99a3f4eeba"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-18_pred.csv",
+      "bytes": 66370,
+      "sha256": "c5c77bdfd76ab2c2f433fc7781535fcc6e776f80d85c7e999c081a910491d02a"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-19_pred.csv",
+      "bytes": 66173,
+      "sha256": "1edab3d43e073fe6c6dd73899a5bb9e2c37a0b84d687747b3a98dbe4e9102c55"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-20_pred.csv",
+      "bytes": 66243,
+      "sha256": "b1cf298df3fd6c92b30eae753fac80970d12b811ed85fbcf309ddf0389c30a25"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-21_pred.csv",
+      "bytes": 66204,
+      "sha256": "cba98092f2772564b7ed37d1b5c6f858aad713ef55254dfdaf573341debc3337"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-22_pred.csv",
+      "bytes": 66190,
+      "sha256": "ef77a13bfa1946d6e9a3a46834ade6e45e239c6688673b81e2b339e3bad16546"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-23_pred.csv",
+      "bytes": 66167,
+      "sha256": "eeaf24d64c0e98b91a755177d20566a6c0183bb67ccbe6c3567ba8827906e0cb"
+    },
+    {
+      "path": "code_for_analysis/data/alice_designed_data/seq-epoch-24_pred.csv",
+      "bytes": 66592,
+      "sha256": "547b20f75b7e9a53a3baff316142500df5ea08ede097f20c938691f33a088bc3"
+    },
+    {
+      "path": "code_for_analysis/alice_x_predict_power.py",
+      "bytes": 4882,
+      "sha256": "7a9f0fc6ccb6e24fe008a9469c9be964f0f4d2ef322e847e030da8afce53328d"
+    },
+    {
+      "path": "reproduction/references/paper_evidence.json",
+      "bytes": 2607,
+      "sha256": "7e1a6c856f784c0d8045f045c058dc3b07a7bd78315761cadf513a85f055d351"
+    }
+  ],
+  "software": {
+    "python": "3.10.18",
+    "platform": "macOS-14.3-arm64-arm-64bit",
+    "numpy": "2.1.3",
+    "pandas": "2.3.2",
+    "scipy": "1.15.2",
+    "matplotlib": "3.10.5",
+    "scikit-learn": "1.7.1"
+  },
+  "paper_formula_evidence": {
+    "primary_caption_verified": true,
+    "caption_reference_url": "https://doi.org/10.1016/j.cpblue.2026.100016",
+    "paper_pearson_r": 0.523,
+    "caption_axis_definition": "Predicted comprehensive prediction score versus experimental value; Methods S1 section 3 defines CP.",
+    "methods_section": "3. Evaluation metrics",
+    "methods_pdf_page_1based": 8,
+    "cp_formula": "(hTfR1 log2 enrichment + production fitness) / 2",
+    "applies_to": "Both experimental measurements and corresponding model predictions",
+    "repository_column_mapping_status": "Formula confirmed by Methods S1; exact named repository CSV columns inferred from local data and numeric agreement.",
+    "recomputed_local_n": 500,
+    "recomputed_local_r": 0.5228407872062214
+  }
+}

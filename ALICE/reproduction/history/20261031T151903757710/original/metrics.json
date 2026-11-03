@@ -1,0 +1,193 @@
+{
+  "status": "completed",
+  "created_at_utc": "2026-10-31T07:14:55.701064+00:00",
+  "command": [
+    "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/reproduce_original.py",
+    "--output-dir",
+    "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/original"
+  ],
+  "script_sha256": "1c6a1dccb0b29ba880320f373d5803dfd57edeb3d86c502a67501ebba2cfbb2e",
+  "python": "3.10.18 (main, Oct  7 2025, 15:51:21) [Clang 20.1.4 ]",
+  "platform": "macOS-14.3-arm64-arm-64bit",
+  "package_versions": {
+    "numpy": "1.22.4",
+    "pandas": "1.5.3",
+    "scipy": "1.7.3",
+    "scikit-learn": "1.0.2",
+    "matplotlib": "3.7.5"
+  },
+  "experiment_type": "original_alice_pretrained_inference_and_eight_step_selection",
+  "expected_model_sklearn_version": "1.0.2",
+  "algorithm_changes": [],
+  "execution_adaptations": [
+    "Resolve all input/output paths from the wrapper location.",
+    "Reuse the deterministic upstream descriptor matrix across three prediction tasks.",
+    "Bypass unused metrics imports, CUDA environment settings, temporary tar_seq.pkl and display options.",
+    "Use original EA process_data directly; reproduce the other step statements unchanged.",
+    "Add hashes, finite-value validation, exact repeated inference check, counts and a selection plot."
+  ],
+  "scope_exclusions": [
+    "RoBERTa/SeqGAN training",
+    "upstream evolution",
+    "wet-lab validation"
+  ],
+  "input_sha256": {
+    "RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv": "89964275210ebbbc91c60fc22b5344662d1f4341a4f5db5d9f41b4c4d8aa3fdd",
+    "Prod_Fit_model.sav": "138418abda92c600b27530c8189acf53d0922e2269875b9ce5b073a024edf71a",
+    "LY6A_model.sav": "aae84ccad7543493354a094dabfd137aff055e80bb72cac6dde51cabcbb235b8",
+    "LY6C1_model.sav": "29621aa3454f7b1d8a48f916b64dafed439aaba20ae9bdde20299e63ed045564"
+  },
+  "upstream_source_sha256": {
+    "alice/ALICE/step5_elite_ascendancy/1-Infer_Production_Fitness.py": "863ab38690150dc64148753877e519b974799b6d0f0f773fc98a35b3af17aaab",
+    "alice/ALICE/step5_elite_ascendancy/2-Infer_Target_Enrichment_LY6A.py": "85a136d0d82d2403ea606f6fc4471921aaf7545c10dbca242b396d346b166b0a",
+    "alice/ALICE/step5_elite_ascendancy/3-Infer_Target_Enrichment_LY6C1.py": "82b4586ef24ba2b3c4ba6ab2bb8270ba661182af582f23f2f563aa1ea9857346",
+    "alice/ALICE/step5_elite_ascendancy/4-FE_score_Filter.py": "429d3f0123991aad4d00ff0d19d9c6edbec49ef2807ddba74548ae71cc3169cf",
+    "alice/ALICE/step5_elite_ascendancy/5-Prod_Fit_Filter.py": "92255d6363b270a5f89a7332d292c57701ff5fbf50df913b9dcd1711a28a7aef",
+    "alice/ALICE/step5_elite_ascendancy/6-EliteAscendancy.py": "560da5ecf7405219d96e4e81ebf505847d61c0c67bda219c06b277663a339ccf",
+    "alice/ALICE/step5_elite_ascendancy/7-multi-target-binding.py": "16a691ed64c0e64251c2e9ade2c848ce8b920dd669b65ebbbb3e1cd052c4fe33",
+    "alice/ALICE/step5_elite_ascendancy/8-delete_reported_seqs.py": "06faf6c1252d85e85b208a89664a767383050fccc47091d16b7fe80bdec98ba0",
+    "alice/ALICE/tools/parameters.py": "885c70209654d5e8d27205f0323f37651a8aebdf5721c536ee30bcf46516d406",
+    "alice/ALICE/tools/featured_data_generated/AAComposition.py": "901f6798168bed366420892b49d0ef37712e4fa466c18a931c4f84694622c14f",
+    "alice/ALICE/tools/featured_data_generated/Autocorrelation.py": "3c5654f11676aa9e0dba4c060a8a5f77d38314748cba590b967e32ce147092ff",
+    "alice/ALICE/tools/featured_data_generated/BasicDes.py": "12be11aab91b8166710c282906cb5eaf260eb22397e02a416e5c7dfa2dbcf578",
+    "alice/ALICE/tools/featured_data_generated/CTD.py": "43bae54797a7b7598189c41de37d969e45389cebae6c3bd2a28e62802c0becb1",
+    "alice/ALICE/tools/featured_data_generated/PseudoAAC.py": "8c5bf01f9c081d02e73b21b253db361a677484a6dd0a2ac0b8182e0ebb4a0b61",
+    "alice/ALICE/tools/featured_data_generated/QuasiSequenceOrder.py": "1ae75138a4cedfcda4d9d6a3818264931ddb161de50ab406866da5022cb8a116"
+  },
+  "input_directory": "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/external/alice_original",
+  "output_directory": "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/original",
+  "data_audit": {
+    "input_rows": 1000,
+    "unique_input_sequences": 1000,
+    "duplicate_input_rows": 0,
+    "input_sequence_lengths": [
+      7
+    ],
+    "expected_author_input_rows": 1000,
+    "author_input_row_count_matches": true
+  },
+  "features": {
+    "rows": 1000,
+    "columns": 674,
+    "finite": true,
+    "implementation": "alice/ALICE/tools/parameters.py:cal_pep",
+    "column_order": "Unchanged dict insertion order, as in upstream pd.DataFrame(seqs_desc).values",
+    "elapsed_seconds": 6.64044358296087
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "Prod_Fit",
+      "rows": 1000,
+      "unique_sequences": 1000,
+      "output_file": "Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+      "sha256": "894c6442d0eefc774e0f252375f1d450b976cd22b2c7e6015aab43f5310843c7",
+      "elapsed_seconds": 45.622437125013676,
+      "model_class": "sklearn.ensemble._gb.GradientBoostingRegressor",
+      "model_file": "Prod_Fit_model.sav",
+      "model_expected_features": 674,
+      "repeated_predictions_exactly_equal": true,
+      "prediction_min": -10.194580188355983,
+      "prediction_max": 2.576175071330724,
+      "prediction_mean": -4.447098433691777,
+      "warnings": []
+    },
+    {
+      "step": 2,
+      "name": "Target_LY6A_Enri",
+      "rows": 1000,
+      "unique_sequences": 1000,
+      "output_file": "LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+      "sha256": "08878142c2ba6beb63d700ea5b8c4fb26e9da9b8a4342324af694e04163a092b",
+      "elapsed_seconds": 0.08586383401416242,
+      "model_class": "sklearn.ensemble._gb.GradientBoostingRegressor",
+      "model_file": "LY6A_model.sav",
+      "model_expected_features": 674,
+      "repeated_predictions_exactly_equal": true,
+      "prediction_min": -6.353525945871225,
+      "prediction_max": 3.410767249052589,
+      "prediction_mean": -1.6759705092561241,
+      "warnings": []
+    },
+    {
+      "step": 3,
+      "name": "Target_LY6C1_Enri",
+      "rows": 1000,
+      "unique_sequences": 1000,
+      "output_file": "LY6C1_model_LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+      "sha256": "9e934d6d44fcf927bad4a8a8297fca1df4e43a1f48701506f4691794e284cc80",
+      "elapsed_seconds": 0.08213883399730548,
+      "model_class": "sklearn.ensemble._gb.GradientBoostingRegressor",
+      "model_file": "LY6C1_model.sav",
+      "model_expected_features": 674,
+      "repeated_predictions_exactly_equal": true,
+      "prediction_min": -5.374359812485871,
+      "prediction_max": 5.318593971499545,
+      "prediction_mean": 0.20177694275941757,
+      "warnings": []
+    },
+    {
+      "step": 4,
+      "name": "FE score top 500",
+      "rows": 500,
+      "unique_sequences": 500,
+      "output_file": "FE_score_Top500.csv",
+      "sha256": "6641a0f4b76b55e7248ffe44978d9057c0083e38118cd3b8c0c515cb41a0c7e6",
+      "elapsed_seconds": 0.0026424590032547712
+    },
+    {
+      "step": 5,
+      "name": "Production fitness top 100",
+      "rows": 100,
+      "unique_sequences": 100,
+      "output_file": "Prod_Fit_Top100.csv",
+      "sha256": "90ef69dfbf0463316ab2ba0242d63554f392626b17fd986e62d3f890ff87100a",
+      "elapsed_seconds": 0.0013389160158112645
+    },
+    {
+      "step": 6,
+      "name": "Original EA score threshold",
+      "rows": 12,
+      "unique_sequences": 12,
+      "output_file": "EA_Top.csv",
+      "sha256": "728376d2317cb6a31b51db0982e6c69b73586f97fb68610cca8111b443355ec0",
+      "elapsed_seconds": 0.004394125018734485
+    },
+    {
+      "step": 7,
+      "name": "Original joint-target filter",
+      "rows": 11,
+      "unique_sequences": 11,
+      "output_file": "multi_tar_TOP.csv",
+      "sha256": "e7943f6754af179afd3455f8d1dadae55bf87d62ab9640511283a0beea278206",
+      "elapsed_seconds": 0.0012922079768031836
+    },
+    {
+      "step": 8,
+      "name": "Original reported-sequence exclusion",
+      "rows": 8,
+      "unique_sequences": 8,
+      "output_file": "ALICE_TOP.csv",
+      "sha256": "246949026730d01aff709686f9d3de7cfca1230f76a6f262d893c0329a4d6348",
+      "elapsed_seconds": 0.0011927500017918646
+    }
+  ],
+  "final_result": {
+    "selected_rows": 8,
+    "unique_selected_sequences": 8,
+    "readme_reported_sequence_count": 8,
+    "readme_sequence_count_matches": true,
+    "paper_sequence_identity_verified": true,
+    "paper_sequence_identity_note": "Exact set comparison with AAV.ALICE-N1–N8 in supplementary Table S13, PDF page 61.",
+    "selected_file": "ALICE_TOP.csv",
+    "paper_reference_sha256": "7e1a6c856f784c0d8045f045c058dc3b07a7bd78315761cadf513a85f055d351",
+    "paper_source_sha256": "4cbb85f0e43c8f5ab196c8b98fff384539e2debe010c52efd7612c3c4450c5fb",
+    "missing_paper_sequences": [],
+    "extra_selected_sequences": [],
+    "predicted_fitness_matches_published_rounding": true
+  },
+  "validation": {
+    "input_and_model_files_unchanged": true
+  },
+  "elapsed_seconds": 55.91810358403018
+}

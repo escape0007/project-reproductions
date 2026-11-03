@@ -1,0 +1,11 @@
+cohort_set,method,rows,unique_sequences,duplicate_rows,overlap_rows_with_supplied_train_and_test,fitness_logratio_finite_pairs,fitness_logratio_max_absolute_difference,source,selection
+processed,ALICE-X,500,500,0,0,500,4.999306940645099e-10,code_for_analysis/data/processed/lib2_ALICE_x.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+processed,ALICE,499,499,0,0,499,4.975293510511847e-10,code_for_analysis/data/processed/lib2_ALICE.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+processed,ST + Ranking,500,500,0,0,500,4.981327572650684e-10,code_for_analysis/data/processed/lib2_ST_Ranking.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+processed,ST,500,500,0,0,500,4.98418306627002e-10,code_for_analysis/data/processed/lib2_ST.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+processed,Random mutation,500,500,0,0,500,4.986848156640633e-10,code_for_analysis/data/processed/lib2_Mutate.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+with_control,ALICE-X,501,501,0,1,501,4.999306940645099e-10,code_for_analysis/data/split_files/lib2_ALICE_x_with_Control.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+with_control,ALICE,500,500,0,1,500,4.975293510511847e-10,code_for_analysis/data/split_files/lib2_ALICE_with_Control.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+with_control,ST + Ranking,501,501,0,1,501,4.981327572650684e-10,code_for_analysis/data/split_files/lib2_ST_Ranking_with_Control.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+with_control,ST,501,501,0,1,501,4.98418306627002e-10,code_for_analysis/data/split_files/lib2_ST_with_Control.csv,"All supplied rows, original order; no deduplication or score-based filtering."
+with_control,Random mutation,501,501,0,1,501,4.986848156640633e-10,code_for_analysis/data/split_files/lib2_Mutate_with_Control.csv,"All supplied rows, original order; no deduplication or score-based filtering."

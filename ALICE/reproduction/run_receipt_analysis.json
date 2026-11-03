@@ -1,0 +1,148 @@
+{
+  "run_id": "20261031T151710764991",
+  "started_at": "2026-10-31T15:17:10.764991+08:00",
+  "timezone": "Asia/Macau",
+  "platform": "macOS-14.3-arm64-arm-64bit",
+  "machine": "arm64",
+  "stages": [
+    {
+      "stage": "analysis",
+      "command": [
+        "/Users/zhuang/Desktop/项目复现/ALICE/.venv/bin/python",
+        "-u",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/reproduce_analysis.py",
+        "--output-dir",
+        "/Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/analysis"
+      ],
+      "log": "reproduction/logs/analysis.log",
+      "script_sha256": "03059524e2c5e195117fbf397d1cc5d92f7a311d95b6464383f31bead2ab1423",
+      "pid": 97485,
+      "status": "completed",
+      "exit_code": 0,
+      "elapsed_seconds": 79.878,
+      "artifacts": [
+        {
+          "path": "reproduction/results/analysis/analysed_points.csv",
+          "bytes": 823835,
+          "sha256": "e9c06fd1af6d61e3fe8483f91a624a5072ba9796417615f0ac251f1b7ccb273a"
+        },
+        {
+          "path": "reproduction/results/analysis/archived_cohort_distributions.pdf",
+          "bytes": 15233,
+          "sha256": "fc7ba9640920c5cc5c1e34f4a65bee9442ba682ee0b040845822bd040a233177"
+        },
+        {
+          "path": "reproduction/results/analysis/archived_cohort_distributions.png",
+          "bytes": 84260,
+          "sha256": "5ef3903b104b5dcd35af8985d787a432edd60796c3b68cecd8f3ab9119f1cb10"
+        },
+        {
+          "path": "reproduction/results/analysis/cohort_audit.csv",
+          "bytes": 2135,
+          "sha256": "c1a77cff856e58fa1d4f00f78f69642821ff501db83a9f8677b66d1f3c2f26ab"
+        },
+        {
+          "path": "reproduction/results/analysis/correlation_metrics.csv",
+          "bytes": 7105,
+          "sha256": "ca996e2c7b8be85d1681ea953e13ac16dc8d70410bd51ab12fcd65487c7903a3"
+        },
+        {
+          "path": "reproduction/results/analysis/figure6f_compatible_alternate_measurement.pdf",
+          "bytes": 23549,
+          "sha256": "d4bac953fce5b1e00568a7f0959f09c4dbe43644c5bcc0f22d3bb8eaa7282784"
+        },
+        {
+          "path": "reproduction/results/analysis/figure6f_compatible_alternate_measurement.png",
+          "bytes": 121710,
+          "sha256": "8341ee04f4270e17b4d8d9e6bd7eb8da4749dadcdf8629b75badc80a8ae5aa72"
+        },
+        {
+          "path": "reproduction/results/analysis/figure6f_measurement_sensitivity.pdf",
+          "bytes": 29884,
+          "sha256": "3f80cff8d5c323ffc67dd0dc1c0e00470c5e693443ef4fe0c47acb124f9ca455"
+        },
+        {
+          "path": "reproduction/results/analysis/figure6f_measurement_sensitivity.png",
+          "bytes": 176606,
+          "sha256": "09d1cff45223ed91948cb80f94f46e0f554737ae986cc14744a4244f5288b11f"
+        },
+        {
+          "path": "reproduction/results/analysis/metrics.json",
+          "bytes": 42185,
+          "sha256": "1b152c2195ba636514516502836655a259d92b8e1772ab49a0f1983d3ad363bf"
+        },
+        {
+          "path": "reproduction/results/analysis/precomputed_epoch_summary.csv",
+          "bytes": 16327,
+          "sha256": "88314a1d815d72849fc0ed5b619eb2c14f73802abd85b45cce9d5b92a715dc65"
+        },
+        {
+          "path": "reproduction/results/analysis/precomputed_trajectories.pdf",
+          "bytes": 19112,
+          "sha256": "cedbfcc7ad96571f102d32d17bff3ed84862eb22689033611d162778ef352cf2"
+        },
+        {
+          "path": "reproduction/results/analysis/precomputed_trajectories.png",
+          "bytes": 212123,
+          "sha256": "02d3b586c2603cd166161e227bd3481b5d6f10cefddcd7d477811d62d702ecd8"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ALICE.pdf",
+          "bytes": 40398,
+          "sha256": "248450793cb124acaac313f5ff8cc6c74deb1d88a7347df598e8e52ac77d42fe"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ALICE.png",
+          "bytes": 207321,
+          "sha256": "a4f291a410bc97d6133e06855158f7f2a332ac24c1fab316a9345275c81debcc"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ALICE_x.pdf",
+          "bytes": 40764,
+          "sha256": "c3e3c1ec8cc0470a9a4117cb305824f4dffb6eece67560bc56ac8f153decbb7d"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ALICE_x.png",
+          "bytes": 207074,
+          "sha256": "229d357b5794611f9abc233d2e28afc4bde6bbdaa8c6c7003d4b37d3e39ab9b5"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_Mutate.pdf",
+          "bytes": 39742,
+          "sha256": "9682735f6415487cb771655be0a56b351e5b82c91fa3a1fcb6ecb3d9fbc03ea5"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_Mutate.png",
+          "bytes": 205910,
+          "sha256": "bc523e6a1d37f178473469558eb70cc90e88875aa95e00db7fb3a1db4da825eb"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ST.pdf",
+          "bytes": 39632,
+          "sha256": "191a862bb77190d709ffeaade9b653c1e9f4692f540e0711cb2e43e0e18a2bcf"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ST.png",
+          "bytes": 214256,
+          "sha256": "32e8939ae2208f8a95c685524001e6668c74de4ac8b39b984ebbfea5881d2389"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ST_Ranking.pdf",
+          "bytes": 40206,
+          "sha256": "02f8763099d23a9d41991fa736040761ca7af3982f7e277c43857e2a4adf8835"
+        },
+        {
+          "path": "reproduction/results/analysis/scatter_ST_Ranking.png",
+          "bytes": 206095,
+          "sha256": "8193d8445bb6a684e0518fe102b2aae5ab3436b87b628356e7a75285abfb2c76"
+        }
+      ]
+    }
+  ],
+  "timeout_seconds_per_stage": 600,
+  "scope": "Published-input replay and archived-data analysis; no de novo pretraining or wet-lab reproduction",
+  "upstream_commit": "e91627ff7fdb9df6637fa1047e8f9f7c9bc51141",
+  "tracked_changes": "",
+  "finished_at": "2026-10-31T15:18:30.671520+08:00",
+  "status": "completed"
+}

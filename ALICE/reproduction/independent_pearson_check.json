@@ -1,0 +1,8 @@
+{
+  "method": "independent Python standard-library Pearson calculation; archived predictions only",
+  "n": 500,
+  "measurements": {
+    "huTfR1fc_log2_enrichment": 0.5228407872062214,
+    "huTfR1_fc_log2_enrichment": 0.42346835296338503
+  }
+}

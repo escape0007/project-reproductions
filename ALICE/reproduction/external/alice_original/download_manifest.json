@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1ETJlSTsljAezfSEQyls_C7qo1ZyFmZEG",
+    "name": "RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv",
+    "size": 20916,
+    "sha256": "89964275210ebbbc91c60fc22b5344662d1f4341a4f5db5d9f41b4c4d8aa3fdd"
+  },
+  {
+    "id": "13sQxZ2PuedCfBFiU8545r3x2B2WE4VFH",
+    "name": "Prod_Fit_model.sav",
+    "size": 49061170,
+    "sha256": "138418abda92c600b27530c8189acf53d0922e2269875b9ce5b073a024edf71a"
+  },
+  {
+    "id": "1yEwHrI2yoDWOEY3C90tuzhVY-F10fXnw",
+    "name": "LY6C1_model.sav",
+    "size": 38981932,
+    "sha256": "29621aa3454f7b1d8a48f916b64dafed439aaba20ae9bdde20299e63ed045564"
+  },
+  {
+    "id": "15Lmjcnzsvu2eamtezXEjB5-NDNgFshLa",
+    "name": "LY6A_model.sav",
+    "size": 38891561,
+    "sha256": "aae84ccad7543493354a094dabfd137aff055e80bb72cac6dde51cabcbb235b8"
+  }
+]

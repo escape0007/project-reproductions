@@ -1,0 +1,51 @@
+cohort_set,method,target,prediction_column,measurement_column,n,excluded_nonfinite,pearson,spearman,r2
+processed,ALICE-X,fitness,fitness prediction,fitness,500,0,0.47000274000753367,0.4883342733370934,-1.980894136970814
+processed,ALICE-X,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,500,0,0.4265655769023159,0.3997606710426841,-1.2888984073014154
+processed,ALICE-X,mean_pair,prediction_mean,measurement_mean,500,0,0.42346835296338503,0.40027830511322043,-2.2393339820853035
+processed,ALICE-X,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,500,0,0.4626820859620906,0.37223390493561975,-2.2024570417379805
+processed,ALICE-X,mean_pair_alternate,prediction_mean,measurement_mean_alternate,500,0,0.5228407872062215,0.5051534446137784,-3.0299909281136737
+processed,ALICE,fitness,fitness prediction,fitness,499,0,0.3651763816152759,0.3342657362918608,-2.733656191954246
+processed,ALICE,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,499,0,0.4206302724257859,0.40516203491319985,-1.462951844223125
+processed,ALICE,mean_pair,prediction_mean,measurement_mean,499,0,0.41251000742578325,0.418876210251829,-2.818975849718149
+processed,ALICE,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,499,0,0.4010736706544641,0.36705236979984057,-2.1311321627560393
+processed,ALICE,mean_pair_alternate,prediction_mean,measurement_mean_alternate,499,0,0.34283514544984517,0.3174397952531569,-3.9865090241087593
+processed,ST + Ranking,fitness,fitness prediction,fitness,500,0,0.4340163101784623,0.4250975723902895,-2.7180694671648618
+processed,ST + Ranking,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,500,0,0.5507016445843049,0.5443295693182773,-0.8559922384312502
+processed,ST + Ranking,mean_pair,prediction_mean,measurement_mean,500,0,0.33984447577152754,0.3231523646094584,-2.1209239248775447
+processed,ST + Ranking,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,500,0,0.4443592950781974,0.4566536666146665,-1.9931791478281768
+processed,ST + Ranking,mean_pair_alternate,prediction_mean,measurement_mean_alternate,500,0,0.38858721201289753,0.3560082080328321,-3.388692723762449
+processed,ST,fitness,fitness prediction,fitness,500,0,0.6514795658673553,0.6404747218988875,-1.2399656804367445
+processed,ST,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,500,0,0.5370014921255677,0.590318073272293,-3.212141374329188
+processed,ST,mean_pair,prediction_mean,measurement_mean,500,0,0.6424906022739243,0.7235195660782643,-3.546630246775753
+processed,ST,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,500,0,0.0938788738391994,-0.0021034644138576554,-4.860581383130674
+processed,ST,mean_pair_alternate,prediction_mean,measurement_mean_alternate,500,0,0.282826318042585,0.2918619034476138,-7.934677543832285
+processed,Random mutation,fitness,fitness prediction,fitness,500,0,0.4271241653358264,0.4387926991707967,-2.940195935993459
+processed,Random mutation,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,500,0,0.5521104648323284,0.4902962331849327,-3.184377993541342
+processed,Random mutation,mean_pair,prediction_mean,measurement_mean,500,0,0.2747498838526721,0.301935703742815,-5.661799057031175
+processed,Random mutation,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,500,0,0.3986270747978921,0.26727898911595643,-3.658792971828328
+processed,Random mutation,mean_pair_alternate,prediction_mean,measurement_mean_alternate,500,0,0.11781514185116246,0.10674522698090791,-6.174065747164707
+with_control,ALICE-X,fitness,fitness prediction,fitness,501,0,0.4640013579413238,0.4843432497554692,-2.0226305329441683
+with_control,ALICE-X,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,501,0,0.4291709723741184,0.40213660328744905,-1.2855244791339504
+with_control,ALICE-X,mean_pair,prediction_mean,measurement_mean,501,0,0.42383746255310295,0.401948421881337,-2.2480061082638993
+with_control,ALICE-X,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,501,0,0.4670785772739099,0.37546274781115063,-2.1804196415583585
+with_control,ALICE-X,mean_pair_alternate,prediction_mean,measurement_mean_alternate,501,0,0.5264535077278671,0.5075765918362479,-3.0122119592253567
+with_control,ALICE,fitness,fitness prediction,fitness,500,0,0.3615671428941378,0.33116465265861067,-2.7714230780741675
+with_control,ALICE,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,500,0,0.4238920330190768,0.40758787035148136,-1.4573510814981852
+with_control,ALICE,mean_pair,prediction_mean,measurement_mean,500,0,0.41386603765185803,0.42072792291169164,-2.8237056831230194
+with_control,ALICE,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,500,0,0.40691130062612846,0.37037476149904597,-2.108142634143291
+with_control,ALICE,mean_pair_alternate,prediction_mean,measurement_mean_alternate,500,0,0.3512265810912329,0.32100637202548815,-3.9609882867827393
+with_control,ST + Ranking,fitness,fitness prediction,fitness,501,0,0.42971390657998876,0.4208723906768137,-2.7589828560797747
+with_control,ST + Ranking,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,501,0,0.5522278029720992,0.5461144642984946,-0.8531737823935621
+with_control,ST + Ranking,mean_pair,prediction_mean,measurement_mean,501,0,0.34077593992766086,0.32510857170121915,-2.1279956727552904
+with_control,ST + Ranking,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,501,0,0.45039272567810906,0.4594947157477873,-1.9708108714114863
+with_control,ST + Ranking,mean_pair_alternate,prediction_mean,measurement_mean_alternate,501,0,0.3955527358305405,0.3593614046806785,-3.3670955343229263
+with_control,ST,fitness,fitness prediction,fitness,501,0,0.6500052349963467,0.6380682777870553,-1.2592233323392001
+with_control,ST,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,501,0,0.5478115177389818,0.5927328768757306,-3.070814225858764
+with_control,ST,mean_pair,prediction_mean,measurement_mean,501,0,0.6483595395082364,0.7250273635994944,-3.495762058693
+with_control,ST,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,501,0,0.11944771255793982,0.003849416704439726,-4.593501621572872
+with_control,ST,mean_pair_alternate,prediction_mean,measurement_mean_alternate,501,0,0.2996106147117991,0.296039792924112,-7.623681959813354
+with_control,Random mutation,fitness,fitness prediction,fitness,501,0,0.4242193714894344,0.4357992222725864,-2.978359769305835
+with_control,Random mutation,receptor,hTFR1 enrichment prediction,huTfR1_fc_log2_enrichment,501,0,0.5576076762082224,0.49325638762316015,-3.1499902893553697
+with_control,Random mutation,mean_pair,prediction_mean,measurement_mean,501,0,0.2858438610356029,0.30574468592695087,-5.636210928116704
+with_control,Random mutation,receptor_alternate,hTFR1 enrichment prediction,huTfR1fc_log2_enrichment,501,0,0.4080560926793484,0.2714550182503519,-3.5986212624854277
+with_control,Random mutation,mean_pair_alternate,prediction_mean,measurement_mean_alternate,501,0,0.13991187004264222,0.11161762530715463,-6.093876572044933

@@ -1,0 +1,9 @@
+# Python 3.10.18; versions from bundled AutoGluon checkpoint metadata.
+autogluon.tabular[lightgbm]==1.4.0
+numpy==2.1.3
+pandas==2.3.2
+scipy==1.15.2
+scikit-learn==1.7.1
+lightgbm==4.6.0
+matplotlib==3.10.5
+gdown==5.2.0

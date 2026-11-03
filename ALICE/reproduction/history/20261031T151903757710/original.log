@@ -1,0 +1,10 @@
+Step 1: Prod_Fit: 1000 rows -> Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv
+Step 2: Target_LY6A_Enri: 1000 rows -> LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv
+Step 3: Target_LY6C1_Enri: 1000 rows -> LY6C1_model_LY6A_model_Prod_Fit_RoBERTa_SeqGAN_RankFiltPro_FE_1000.csv
+Step 4: FE score top 500: 500 rows -> FE_score_Top500.csv
+Step 5: Production fitness top 100: 100 rows -> Prod_Fit_Top100.csv
+Processed data saved to /Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/original/EA_Top.csv
+Step 6: Original EA score threshold: 12 rows -> EA_Top.csv
+Step 7: Original joint-target filter: 11 rows -> multi_tar_TOP.csv
+Step 8: Original reported-sequence exclusion: 8 rows -> ALICE_TOP.csv
+{"selected_rows": 8, "unique_selected_sequences": 8, "readme_reported_sequence_count": 8, "readme_sequence_count_matches": true, "paper_sequence_identity_verified": true, "paper_sequence_identity_note": "Exact set comparison with AAV.ALICE-N1–N8 in supplementary Table S13, PDF page 61.", "selected_file": "ALICE_TOP.csv", "paper_reference_sha256": "7e1a6c856f784c0d8045f045c058dc3b07a7bd78315761cadf513a85f055d351", "paper_source_sha256": "4cbb85f0e43c8f5ab196c8b98fff384539e2debe010c52efd7612c3c4450c5fb", "missing_paper_sequences": [], "extra_selected_sequences": [], "predicted_fitness_matches_published_rounding": true}

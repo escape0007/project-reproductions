@@ -1,0 +1,27 @@
+ALICE-X          fitness    n=500 Pearson=0.470003 R2=-1.980894
+ALICE-X          receptor   n=500 Pearson=0.426566 R2=-1.288898
+ALICE-X          mean_pair  n=500 Pearson=0.423468 R2=-2.239334
+ALICE-X          receptor_alternate n=500 Pearson=0.462682 R2=-2.202457
+ALICE-X          mean_pair_alternate n=500 Pearson=0.522841 R2=-3.029991
+ALICE            fitness    n=499 Pearson=0.365176 R2=-2.733656
+ALICE            receptor   n=499 Pearson=0.420630 R2=-1.462952
+ALICE            mean_pair  n=499 Pearson=0.412510 R2=-2.818976
+ALICE            receptor_alternate n=499 Pearson=0.401074 R2=-2.131132
+ALICE            mean_pair_alternate n=499 Pearson=0.342835 R2=-3.986509
+ST + Ranking     fitness    n=500 Pearson=0.434016 R2=-2.718069
+ST + Ranking     receptor   n=500 Pearson=0.550702 R2=-0.855992
+ST + Ranking     mean_pair  n=500 Pearson=0.339844 R2=-2.120924
+ST + Ranking     receptor_alternate n=500 Pearson=0.444359 R2=-1.993179
+ST + Ranking     mean_pair_alternate n=500 Pearson=0.388587 R2=-3.388693
+ST               fitness    n=500 Pearson=0.651480 R2=-1.239966
+ST               receptor   n=500 Pearson=0.537001 R2=-3.212141
+ST               mean_pair  n=500 Pearson=0.642491 R2=-3.546630
+ST               receptor_alternate n=500 Pearson=0.093879 R2=-4.860581
+ST               mean_pair_alternate n=500 Pearson=0.282826 R2=-7.934678
+Random mutation  fitness    n=500 Pearson=0.427124 R2=-2.940196
+Random mutation  receptor   n=500 Pearson=0.552110 R2=-3.184378
+Random mutation  mean_pair  n=500 Pearson=0.274750 R2=-5.661799
+Random mutation  receptor_alternate n=500 Pearson=0.398627 R2=-3.658793
+Random mutation  mean_pair_alternate n=500 Pearson=0.117815 R2=-6.174066
+Saved 50 correlation summaries and 65 archived epochs to /Users/zhuang/Desktop/项目复现/ALICE/reproduction/results/analysis
+Scope: archived numerical reanalysis only; no new training or inference.

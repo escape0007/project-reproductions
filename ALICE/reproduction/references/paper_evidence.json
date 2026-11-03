@@ -1,0 +1,77 @@
+{
+  "source_article_doi": "10.1016/j.cpblue.2026.100016",
+  "source_url": "https://ars.els-cdn.com/content/image/1-s2.0-S3051383926000149-mmc1.pdf",
+  "document": "Document S1: Figures S1–S35, Tables S1–S13, and Methods S1",
+  "source_bytes": 16292344,
+  "sha256": "4cbb85f0e43c8f5ab196c8b98fff384539e2debe010c52efd7612c3c4450c5fb",
+  "total_pdf_pages": 112,
+  "retrieved_date_asia_macau": "2026-10-31",
+  "verification": {
+    "text_extraction": "pypdf",
+    "visual_rendering": "pdftoppm",
+    "pages_visually_inspected": [
+      8,
+      61
+    ]
+  },
+  "figure6f": {
+    "primary_caption_verified": true,
+    "caption_reference_url": "https://doi.org/10.1016/j.cpblue.2026.100016",
+    "paper_pearson_r": 0.523,
+    "caption_axis_definition": "Predicted comprehensive prediction score versus experimental value; Methods S1 section 3 defines CP.",
+    "methods_section": "3. Evaluation metrics",
+    "methods_pdf_page_1based": 8,
+    "cp_formula": "(hTfR1 log2 enrichment + production fitness) / 2",
+    "applies_to": "Both experimental measurements and corresponding model predictions",
+    "repository_column_mapping_status": "Formula confirmed by Methods S1; exact named repository CSV columns inferred from local data and numeric agreement.",
+    "recomputed_local_n": 500,
+    "recomputed_local_r": 0.5228407872062214
+  },
+  "original_eight": {
+    "ground_truth_location": "Table S13",
+    "pdf_page_1based": 61,
+    "scope": "AAV.ALICE-N1 through AAV.ALICE-N8, excluding AAV9, N9/N10 and H1/H2/H3",
+    "records": [
+      {
+        "name": "AAV.ALICE-N1",
+        "sequence": "LRSGYSS",
+        "predicted_production_fitness_rounded": 0.93
+      },
+      {
+        "name": "AAV.ALICE-N2",
+        "sequence": "MMRGYSS",
+        "predicted_production_fitness_rounded": -0.49
+      },
+      {
+        "name": "AAV.ALICE-N3",
+        "sequence": "MRPGYSS",
+        "predicted_production_fitness_rounded": 1.85
+      },
+      {
+        "name": "AAV.ALICE-N4",
+        "sequence": "MRSGYSS",
+        "predicted_production_fitness_rounded": 0.94
+      },
+      {
+        "name": "AAV.ALICE-N5",
+        "sequence": "DRYGYSS",
+        "predicted_production_fitness_rounded": -0.07
+      },
+      {
+        "name": "AAV.ALICE-N6",
+        "sequence": "TGFGYSS",
+        "predicted_production_fitness_rounded": -0.28
+      },
+      {
+        "name": "AAV.ALICE-N7",
+        "sequence": "TNYGYSS",
+        "predicted_production_fitness_rounded": 0.1
+      },
+      {
+        "name": "AAV.ALICE-N8",
+        "sequence": "WERGYSS",
+        "predicted_production_fitness_rounded": 0.24
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+# Local operating-system metadata
+.DS_Store
+._*
+
+# Local Python runtimes, environments and installation caches
+.venv*/
+venv/
+env/
+.python/
+.bootstrap/
+.uv-cache/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.mplconfig/
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.idea/
+.vscode/
+
+# Installation transcripts; scientific run logs remain in the repository
+/ALICE/reproduction/install-*.log
