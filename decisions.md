@@ -1,621 +1,358 @@
-# ALICE 决策记录（ADR）
+# ALICE 设计与实现记录（ADR 源码核对版）
 
-> **这个文件补的是什么**
-> 原仓库里所有设计决策都只固化在**常量和代码结构**里（`train_len=7`、
-> `requires_grad=False`、`3.5*sin(...)`），没有任何地方写下"为什么这么选、
-> 代价是什么"。读者只能从常量反推意图，而反推不出被否掉的方案 ——
-> 那恰恰是最有价值的信息。
->
-> **格式**：每条记录四段 —— 背景 / 选项 / 决定 / **代价**。
->
-> **引用约定**：所有路径以仓库根为起点，`文件:行号` 
+> 更新日期：2026-11-05。
+> 本文保留 ADR-001～009 编号，用于解释公开实现；它不是作者当时的决策会议记录。
+> “可比较方案”是阅读者整理的设计空间，不能据此认定作者实际尝试或否决过这些方案。
+> 代码可确认的事实、论文报告的事实和分析性判断分别说明；未验证的效果或因果不作为结论。
 
----
+核对依据为本仓库 `ALICE/` 中对应上游版本 `e91627ff7fdb9df6637fa1047e8f9f7c9bc51141` 的源码、随库数据、[论文补充材料](ALICE/reproduction/references/Document_S1.pdf)和[本机复现报告](ALICE/复现报告.md)。以下相对链接从本仓库根目录解析；PDF 页码为文件的 1-based 页码。
 
-## 决策依赖图
+本次已经执行的是作者公开输入和已训练模型的筛选、推理与统计复算。下文对生成、预训练和进化代码的检查属于源码核对，不代表这些模块已从头训练通过。
 
-```
-ADR-001 设计变量 = 7-mer
-   └─► ADR-002 标签 = 两个 log2 比值
-          └─► ADR-003 走序列统计路线
-                 ├─► ADR-004 ★ 打分 = 对比参考集（不训模型当适应度）
-                 │      ├─► ADR-005 搜索 = 种群启发式（因为打分不可微）
-                 │      └─► ADR-009 第二轮目标反转（因为 004 会"抄答案"）
-                 ├─► ADR-006 代理模型 = 手工描述符 + 回归器横评
-                 │      └─► ADR-008 多目标 = 饱和变换（不用线性加权）
-                 └─► ADR-007 生成器 = 预训练后冻结，只训小 LSTM
+## 模块关系
+
+```text
+原版 ALICE：
+  7-mer 设计范围与功能标签（001、002）
+    ├─ 序列模型预训练和生成（007）
+    ├─ 描述符与功能预测器（003、006）：用于前置筛选和末端评估
+    └─ 参考集对比评分（004）＋启发式搜索（005）
+         → 最终八步筛选（008）
+
+ALICE-X：
+  另有生成训练入口和 AutoGluon 预测器（006、007）
+    → Stage 1 参考评分 / Stage 2 预测与距离评分（009）
 ```
 
-读法：ADR-004 是枢纽。它决定了必须用 ADR-005 的搜索方式，也直接导致了
-ADR-009 的存在。改动 004 等于重做整个项目。
+这表示模块之间的计算关系。代码没有证明“选定参考评分就必须使用某一种搜索算法”，也没有证明“删除已报道序列直接促成了 Stage 2”。
 
----
-
-## ADR-001　设计变量只取插槽里的 7 个氨基酸
+## ADR-001　以 7-mer 插入序列作为主要设计变量
 
 **背景**
 
-外壳蛋白全长 700+ 个氨基酸。"设计一个更好的外壳"听起来是正确的问法，
-但它的搜索空间是 20^700，而且绝大多数改动会让外壳直接组装失败 ——
-没有任何可获得的数据量能支撑这种设计。
+论文补充方法说明，原版数据来自在 AAV9 VP1 的 588–589 位之间插入 7 个氨基酸的文库；设计和评估均依赖这一骨架、插入位置及实验背景。[补充材料，第 3–4 页](ALICE/reproduction/references/Document_S1.pdf#page=3)
 
-**选项**
+**可比较方案**
 
-1. 全长设计（20^700）
-2. 选几个关键位点做点突变（空间小，但"选哪些位点"本身就需要结构知识）
-3. 只设计表面插槽里的 7 个氨基酸（20^7 ≈ 1.28e9）
+可考虑全长序列修改、选定位点突变、固定位置插入短肽等方案。公开代码实现了固定长度短序列的主要流程；不能由此推断其他方案必然失败，或作者逐一排除过它们。
 
-**决定**
+**实现事实**
 
-取方案 3。该插槽是实验上成熟的"可改写区"：塞 7 个氨基酸不破坏整体结构，
-而且这 7 位直接暴露在最外侧、直接决定与受体的结合。
+- 搜索字母表是 20 种氨基酸，7-mer 理论组合数为 `20^7 = 1,280,000,000`。
+- 长度分别出现在[模型参数](ALICE/alice/ALICE/tools/parameters.py#L83)、[语义训练入口](ALICE/alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py#L282)和[进化入口](ALICE/alice/ALICE/step4_function_guided_evolution/function_guided_evolution.py#L68)。
+- 部分值是命名配置字段，部分是脚本内常量；不存在统一控制全部模块长度的单一配置项。
 
-```
-固化在：
-  alice/ALICE/tools/parameters.py:89          GAN.train_len = 7
-  alice/ALICE/tools/parameters.py:59,74       bert.seq_len = 7 / roberta.seq_len = 7
-  alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py:282   start_end = (7,7)
-  alice/ALICE/step4_function_guided_evolution/function_guided_evolution.py:68
-                                              seqlen = 7
-  alice/ALICE/step4_function_guided_evolution/group.py:26
-                                              self.lib = 'ACDEFGHIKLMNPQRSTVWY'
-```
+**代价与边界**
 
-**代价**
+固定局部设计范围降低了组合空间，但不能保证任意 7-mer 都可正常组装或达到目标功能。功能还取决于骨架、插入位置和实验条件；改变这些条件后需要重新验证数据和模型的适用性，不能直接断言全部知识必然作废，也不能保证模型可直接迁移。
 
-- 放弃了外壳其他部位可能带来的改进（免疫逃逸、稳定性、组织特异性）。
-- **天花板被插槽本身限制住**：如果最优解不在这 7 位里，本方法永远找不到。
-- 换一个插槽位置，参考集和所有模型全部作废，要从头再来。
-- 7 这个长度是硬编码在至少 5 个文件里的，不是配置项 —— 想试 9-mer 要改多处。
-
-> **通用经验**：选对设计变量比选对模型重要一个数量级。
-> 要找的是"自由度小、对目标影响大、改了不破坏系统"的切入点。
-
----
-
-## ADR-002　目标函数由"能测什么"反推，不由"想要什么"正推
+## ADR-002　以生产适应度和受体相关富集值作为功能标签
 
 **背景**
 
-真正想要的是"疗效好"。但疗效测不起、测不快、测不了上千条，
-没法当成能批量打标签的监督信号。
+原版包含生产适应度、Ly6a 和 Ly6c1 三个预测任务；ALICE-X 的相关数据与预测器使用生产适应度和 hTfR1 两个任务。不能把二者的数据规模、靶标或测量列混写。
 
-**选项**
+**可比较方案**
 
-1. 用疗效当标签 —— 样本量只能到几十条，训不出任何东西
-2. 用理论打分（结合自由能等）当标签 —— 本身就不准，等于拿噪声当真值
-3. 用测序能廉价给出的计数比值当标签
+可使用实验富集标签、结构计算评分或更接近最终应用的测量。各方案的成本、误差和适用范围需要具体证据，不能从当前实现推出某一类标签必然无效。
 
-**决定**
+**实现事实**
 
-取方案 3。测序便宜地给出三组计数（投料池 / 产出池 / 通关池），定义两个标签：
+ALICE-X 的[语义数据表](ALICE/alice_x/finetuning/data/semantic_tuning_data.csv)包含 `plasmid_mean`、`virus_mean`、`hutfr1_mean` 及相应的富集和 log2 富集列。其标签可按下式理解，具体计数归一化与预处理仍应遵循实验方法：
 
-```
-prod_fit          = log2(virus  / plasmid)    还造得出来吗
-target_enrichment = log2(target / virus)      造出来的能刷开锁吗
+```text
+生产适应度：log2(virus / plasmid)
+受体富集：  log2(target / virus)
 ```
 
-取 log2 是为了让"翻倍"和"减半"在数值上对称。
+这是两个对数比值；共享 `virus` 项可能带来相关误差，不能笼统称为“两个比值都是比值的比值”。log2 使互为倒数的倍数变化在数值上对称。
 
-```
-固化在列名里：
-  alice/ALICE/evaluation/production fitness/Train_Production_Fitness.py:80
-        y = train_data['Prod_Fit'].values
-  alice/ALICE/evaluation/ly6a/Train_Target_Enrichment_LY6A.py:81
-        y = train_data['LY6A_log2enr'].values
-  alice/ALICE/step5_elite_ascendancy/6-EliteAscendancy.py:34
-        ['Target_LY6A_Enri', 'Target_LY6C1_Enri', 'Prod_Fit', 'FE_score']
+[ALICE-X 预处理脚本](ALICE/alice_x/ranking/s1_data_preprocessing.py#L87)会处理标签缺失、按序列去重，并可过滤含 `_` 的序列；[训练入口](ALICE/alice_x/ranking/s2_auto_gb_regressor.py#L122)还处理非数值列、无穷值和缺失行。因此“仓库只过滤含 `_` 的行”不准确。
 
-原始三列计数可直接看（第二轮的数据，仓库里带了）：
-  alice_x/finetuning/data/semantic_tuning_data.csv
-        iAAs, plasmid_mean, virus_mean, hutfr1_mean,
-        V_mean__P_mean_log2_enr, hT_mean__V_mean_log2_enr
-```
+**代价与边界**
 
-**代价**
+这些标签是实验条件下的功能代理量，不能直接等同于疗效。低计数、归一化方式和批次效应可能影响可靠性，但单个低计数比值不能直接判定为纯噪声。上述特征预处理入口没有显式的原始计数下限；这不足以证明上游实验数据没有做质量控制。论文补充方法明确描述了低质量、异常或冗余数据处理。[补充材料，第 4 页](ALICE/reproduction/references/Document_S1.pdf#page=4)
 
-- 这两个比值是**代理量，不是疗效**。优化到极致也不保证能治病。
-- **比值对低计数极度敏感**：投料 3 / 产出 1 算出 0.33，纯属噪声；
-  而噪声样本的比值往往最极端，模型会优先去拟合这些垃圾。
-  ⇒ 必须设计数下限。原仓库只过滤了含 `_` 的行
-  （`alice_x/ranking/s1_data_preprocessing.py:126`），**没有计数下限** —— 这是个缺口。
-- 三个池之间的实验批次差异会直接污染标签，且事后无法纠正。
-- 两个标签是**比值的比值**（target/virus 本身已经除过一次），误差会叠加。
-
-> **通用经验**：先问"我能廉价、批量、定量地测到什么"，那个东西才有资格当标签。
-> 并且要始终清楚代理量和真实目标之间的差距在哪。
-
----
-
-## ADR-003　走序列统计路线，不走结构/对接
+## ADR-003　采用混合流程：序列模型生成、描述符回归和参考集搜索
 
 **背景**
 
-两条路都成立：预测三维结构再做对接打分，或者直接学"序列 → 数值标签"。
+ALICE 的生成器、功能预测器和进化评分承担不同任务。把整个项目概括为“描述符＋传统回归，不使用深度学习”会遗漏预训练 Transformer 和生成网络。
 
-**选项**
+**可比较方案**
 
-1. 结构预测 + 分子对接
-2. 端到端深度学习（序列直接出预测值，大模型）
-3. 描述符 + 传统回归 + 启发式搜索
+功能预测可以比较 one-hot、语言模型表征或理化描述符；搜索可以比较结构评分、学习式代理评分和参考序列评分。这些选项并不互斥。
 
-**决定**
+**实现事实**
 
-取方案 3。
+- [预训练模块](ALICE/alice/ALICE/step1_pretrain/minibert.py#L56)实现 Transformer 编码器；[生成器](ALICE/alice/ALICE/tools/SeqGAN.py#L14)将编码器表征接入后续网络。
+- [功能评估器](ALICE/alice/ALICE/evaluation)使用描述符和多种回归算法。
+- [原版 FE](ALICE/alice/ALICE/step4_function_guided_evolution/evaluation.py#L157)主要通过正负参考集的比对评分引导搜索。
+- 当前这些入口没有把三维结构预测和分子对接作为候选逐条评分步骤。
 
-**为什么否掉前两个**
+**代价与边界**
 
-- 方案 1：这 7 个氨基酸形成的是**柔性环、无稳定构象**（结构预测对这类区域最不准）；
-  外壳是 60 聚体巨复合物；且无法对百万级候选逐一对接。算不准，也算不起。
-- 方案 2：带标签样本约 6×10³，空间 1.28×10⁹，**覆盖率约 5×10⁻⁶**。
-  端到端模型必然过拟合，且在分布外完全失效 —— 而设计任务本质上就是在分布外找东西。
+描述符与经验评分可能降低建模成本，但仍有信息丢失和分布变化风险。不能把“柔性环没有稳定构象”“端到端模型必然过拟合”“参考评分能够补偿所有外推问题”写成已证实结论。
 
+原版论文所述生产适应度及两种受体任务分别有 119,851、89,169、89,040 个数据点；ALICE-X 随库数据是另一组任务。因此用“全项目只有约 6000 条标签”推导技术路线不成立。[补充材料，第 3 页](ALICE/reproduction/references/Document_S1.pdf#page=3)
 
-**代价**
-
-- 放弃了任何机理层面的理解，拿到的是**纯相关性**。
-- 无法外推到训练分布之外（这个代价后来由 ADR-004 来补偿）。
-- 必须靠 `code_for_analysis/` 里的可解释性分析来补充说服力，
-  并且最终只能由湿实验裁决。
-
-> **通用经验**：技术路线的选择标准不是"哪个更接近本质"，
-> 而是"哪个跟我的数据量、算力和时间预算匹配"。
-
----
-
-## ADR-004　★ 打分用"对比参考集"，不训神经网络当适应度 ★
-
-> **这是整个项目的枢纽决策。** 
+## ADR-004　原版 FE 使用正负参考集的序列比对分差
 
 **背景**
 
-搜索需要一个适应度函数。
+原版 FE 需要对候选给出搜索分数。该分数与回归器预测的功能值属于不同指标；前置筛选、末端筛选和 ALICE-X Stage 2 仍会使用预测器。
 
-**选项**
+**可比较方案**
 
-1. 回归模型的预测值直接当适应度
-2. 结构对接能量当适应度（已被 ADR-003 否掉）
-3. 跟"已知好序列"的相似度 **减去** 跟"已知坏序列"的相似度
+可使用回归预测、序列参考评分、结构评分或组合目标。当前原版 FE 实现了参考评分；选择它不能保证免受分布外风险影响。
 
-**决定**
+**实现事实**
 
-取方案 3。相似度用 BLOSUM62 加权的 Smith-Waterman 局部对齐。
+[MSAEva.evaluate](ALICE/alice/ALICE/step4_function_guided_evolution/evaluation.py#L157)的分数为：
 
-```
-score(s) = [ mean_{p∈Pos} SW(s,p) − mean_{n∈Neg} SW(s,n) ] / 归一化 + 0.5
-```
+```text
+FE(s) = 0.5 + [M_p({SW(s,r): r∈Ref+}) − M_p({SW(s,r): r∈Ref−})]
+                  / [2 × len(s) × (u − l)]
 
-```
-实现：
-  alice/ALICE/step4_function_guided_evolution/evaluation.py
-        :23   class MSAEva(EvaMethod)
-        :79   loadSample()   → 读 seq_LY6A_LY6C1.json
-        :88   loadMatrix()   → 读 BLOSSUM62.txt，顺带定出 scorebound
-        :108  msa(a, b)      ← Smith-Waterman 动态规划
-        :157  evaluate(seq)  ← 对比打分
-        :162  return (calculate_mean(dim, posScores)
-                      - calculate_mean(dim, negScores)) / ... + 0.5
-  alice/ALICE/step4_function_guided_evolution/basic.py:42
-        calculate_mean(dim, values)   ← evaluate 的 dim 参数其实是 p-范数开关
-
-数据（打分器的全部"知识"）：
-  alice/ALICE/step4_function_guided_evolution/seq_LY6A_LY6C1.json   76 正 / 53 负
-  alice/ALICE/step4_function_guided_evolution/BLOSSUM62.txt         20×20 相似度表
-
-第二轮的加速版（同一逻辑 + numba + 配对缓存 + 仿射 gap）：
-  alice_x/FE/src/evaluation.py:40   @njit _sw_score_numba()
+M_p(values) = (mean(value^p))^(1/p)
+默认 p=1，因此默认是算术平均；p=∞ 时代码取最大绝对值。
+l = extend；u = 替换矩阵对角元素的平均值。
 ```
 
-**为什么**
+`M_p` 是[广义均值](ALICE/alice/ALICE/step4_function_guided_evolution/basic.py#L42)，不是直接取未经样本数归一化的 p-范数。`MSAEva` 名称虽含 MSA，实际是候选与每条参考序列进行成对比对。
 
-- 方案 1 有个**致命循环**：模型只在训练分布附近可信，而搜索恰恰要往外走。
-  用它当适应度，搜索会直奔模型的"幻觉高分区"—— 分数越刷越高，实际越来越差。
-- 方案 3 是**纯几何**的，不存在分布外崩塌。
-- 离散、不可微也无妨 —— 正好配合 ADR-005 的启发式搜索。
-- **白捡的最大好处：正样本集里同时放多个功能的好序列，
-  就自动实现了"多功能融合"。** 文件名 `seq_LY6A_LY6C1.json` 就是这个意思。
-  这不是靠模型，是靠**参考集的构成**。
-- 可解释：进化完能直接画 motif 图，看出哪段来自哪个功能
-  （`code_for_analysis/motif_change_delta.py`）。
+原版返回分数时没有 `clamp`；上述缩放公式本身不足以保证任意输入、矩阵和参数下的值都落在 `[0,1]`。
 
-**代价**
+- [参考 JSON](ALICE/alice/ALICE/step4_function_guided_evolution/seq_LY6A_LY6C1.json)含 **76 条正参考、53 条负参考**。
+- [BLOSSUM62.txt](ALICE/alice/ALICE/step4_function_guided_evolution/BLOSSUM62.txt)实际为 **23×23**，包含 B、Z、X，不能写成 20×20。搜索字母表仍是 20 个字符。
+- [比对实现](ALICE/alice/ALICE/step4_function_guided_evolution/evaluation.py#L108)默认局部模式，`gap=-4`、`extend=-2`；单次比对的主体是两个位置循环。它通过保存胜出方向处理延伸罚分。
+- [ALICE-X 实现](ALICE/alice_x/FE/src/evaluation.py#L40)使用 Numba、缓存及独立的 gap 状态；这是同类评分思路，不能未经对照就宣称与旧实现逐点等价。
 
-- 整个打分器的信息量全在那 **76+53 条**参考序列里。选错参考集，全盘皆错。
-  而原仓库没有记录这些序列是怎么挑的 —— **不可复现的关键一环**。
-- 负样本**不能**用随机序列：否则打分器学到的只是"像不像一个正常蛋白片段"，
-  对本任务毫无区分力。原仓库的负样本是实测差的，这点做对了。
-- 它只回答"像不像已知的好序列"，**不回答绝对量纲**
-  ⇒ 所以 ADR-006 的回归模型仍然需要，但降级到漏斗末端当排序器用。
-- **"向参考集回归"的固有风险**：优化到底就是把参考序列抄一遍。
-  证据就是 `alice/ALICE/step5_elite_ascendancy/8-delete_reported_seqs.py`
-  不得不硬删 `IRQGYSS` / `LRVGYSS` / `LRAGYSS` 三条已报道序列。
-  ⇒ 这个代价直接催生了 ADR-009。
-- `MSAEva.msa()` 是纯 Python 三重循环，1000 条种群 × 129 条参考 × 11 代
-  = 约 142 万次 DP，慢。第二轮才用 numba 修掉。
+**代价与边界**
 
----
+分数依赖参考集、替换矩阵与参数，不能保证新候选具有相应实验功能，也不能自动保证多功能融合。接近正参考、远离负参考是一种序列层面的偏好，仍需要独立验证。
 
-## ADR-005　搜索用种群启发式，默认 GA+EDA 混合
+论文已说明参考集筛选原则，Table S2 给出名单和来源；所以“完全没有记录参考集怎么挑”不成立。代码 JSON 本身未提供完整的从原始实验数据自动重建参考集的流程，这才是需要区分的复现边界。[补充方法，第 4 页](ALICE/reproduction/references/Document_S1.pdf#page=4) · [Table S2，第 45 页](ALICE/reproduction/references/Document_S1.pdf#page=45)
+
+原版末端确实排除三条指定已报道序列，但这只证明存在排除规则；不能单凭它认定搜索必然复制参考集，或推导 ALICE-X Stage 2 的历史开发动机。
+
+## ADR-005　提供 GA、EDA、SA 和 EDG 搜索实现，原版默认 EDG
 
 **背景**
 
-ADR-004 的打分函数不可微，搜索空间离散，梯度法完全不可用。
+候选是离散序列，原版参考评分未提供可供普通反向传播直接使用的梯度。启发式搜索与这一实现相适配，但并不意味着策略梯度、离散松弛等其他搜索方式在原则上不可用。
 
-**选项**
+**可比较方案**
 
-1. 全枚举 —— 1.28e9 × 129 次对齐，不可能
-2. 随机采样 —— 覆盖率 ~10⁻⁶，等于白撒
-3. 单一启发式（只用 GA，或只用 EDA，或只用 SA）
-4. 多算子并存 + 默认用混合算子
+全枚举、随机搜索、遗传算法、分布估计算法、模拟退火及其组合均可作为比较对象。其效率和质量需要按预算与实验验证，不宜写成“随机采样等于无效”或“混合必然更优”。
 
-**决定**
+**实现事实**
 
-取方案 4。实现四种算子，默认 `EDG = 70% GA 后代 + 30% EDA 采样`。
+[原版入口](ALICE/alice/ALICE/step4_function_guided_evolution/function_guided_evolution.py#L17)通过 `--group_type` 选择算子，默认 `EDG`；循环执行 11 次进化，没有在该入口实现收敛停止条件。
 
-```
-  alice/ALICE/step4_function_guided_evolution/group.py:7
-        class Group(ABC)      ← 种群抽象基类，evolution() 是抽象方法
-                                 evamet 是 property，setter 里自动重建 np.vectorize
-  alice/ALICE/step4_function_guided_evolution/GA.py:18
-        class GAGroup         rmutate=0.3  rcopy=0.2  单点/双点交叉
-  alice/ALICE/step4_function_guided_evolution/EDA.py:9
-        class EDAGroup        rbest=0.5  alpha=0.6（PBIL 式分布平滑）
-  alice/ALICE/step4_function_guided_evolution/SA.py:13
-        class SAGroup         t0=1.6  经典/加速退火两种降温
-  alice/ALICE/step4_function_guided_evolution/mixture.py:10
-        class EDGGroup(EDAGroup, GAGroup)   ← 多继承拼算子
-        :20   r_eda=0.3, r_ga_copy=0.2
-        :22   self.alpha = 1   ← 注意：覆盖了 EDA 的 0.6，等于退化成 UMDA（不平滑）
-  alice/ALICE/step4_function_guided_evolution/function_guided_evolution.py
-        :17   --group_type 选算子
-        :87   total_epoch = 11
-  alice/ALICE/step4_function_guided_evolution/basic.py:67  weighted_choice()   ← 按分数加权抽亲本
-```
+| 实现 | 默认值或行为 |
+|---|---|
+| [GA](ALICE/alice/ALICE/step4_function_guided_evolution/GA.py#L31) | 逐位变异概率 0.3、保留率 0.2，默认单点交叉，支持切换交叉策略 |
+| [EDA](ALICE/alice/ALICE/step4_function_guided_evolution/EDA.py#L9) | `rbest=0.5`、`alpha=0.6`，根据优选个体估计逐位分布 |
+| [SA](ALICE/alice/ALICE/step4_function_guided_evolution/SA.py#L13) | 默认 `t0=1.6`，实现不同降温方式 |
+| [EDG](ALICE/alice/ALICE/step4_function_guided_evolution/mixture.py#L20) | `r_eda=0.3`、`r_ga_copy=0.2`，同时把 `alpha` 设为 1 |
 
-**为什么是混合**
+按 EDG 的种群划分公式，若总数为 1000，则为 **300 个 EDA 采样、560 个 GA 交叉变异产物、140 个直接保留个体**。笼统称为“70% GA 后代＋30% EDA”会遗漏 GA 部分内部的精英保留。
 
-- GA 擅长**保住好的局部片段**（"积木"），但容易卡在少数几个序列家族里出不来。
-- EDA 擅长**抓全局共识**（逐位字母频率），但会飞快坍缩到一条共识序列、多样性全丢。
-- 混合让两者互相救：GA 提供多样性来源，EDA 提供收敛压力。
+论文补充 Figure S8 已比较 SA、GA、EDA、EDG 的 FE 轨迹和功能分布，所以“没有算法比较”不成立。当前代码的默认值不必然覆盖论文每一组实验配置；本次也没有重新执行这些算法比较。[补充材料，第 73 页](ALICE/reproduction/references/Document_S1.pdf#page=73)
 
-**代价**
+**代价与已确认的实现问题**
 
-- 四套算子的超参（`rmutate` `rcopy` `rbest` `alpha` `r_eda` `t0`）全部是写死的默认值，
-  原仓库没有调参记录，也没有消融对比 —— 无法判断 EDG 是否真的优于单一算子。
-  （第二轮补上了 `alice_x/FE/src/function_guided_evolution.py` 的
-  `--edg_r_eda` / `--ga_rmutate` 等开关和 `run_summary.json`。）
-- `mixture.py:22` 把 `alpha` 覆盖成 1，使 EDA 的跨代分布平滑失效。
-  这可能是有意的（配合 GA 已经提供了惯性），也可能是漏改 —— **代码里没说**。
-- `total_epoch = 11` 是硬编码的魔法数，没有收敛判据。
-- `group.py:95 calcDis()` 对一维字符串数组做二维索引（`self.inds[:, i]`），
-  **必定抛 IndexError**。它是死代码 —— EDA 用的是自己的 `calcBestdis()`。
-- GA 的精英保留写法很隐晦：`newinds = self.inds[np.argsort(self.score)]`（升序）
-  后覆写前 `ncross` 个，于是存活下来的是**数组末尾的高分个体**。
-  正确但极易误读。
+这些参数有构造参数、setter 和部分命令行入口，并非全部无法配置；但分散在多个模块中，不能仅凭默认值认定它们经过最优调参。`alpha=1` 表示不保留旧分布的平滑贡献，其设计动机不能由常量本身确定。
 
----
+[basic.py](ALICE/alice/ALICE/step4_function_guided_evolution/basic.py#L1)先导入 NumPy 的 `random` 函数，后又以同名导入标准库模块；[weighted_choice](ALICE/alice/ALICE/step4_function_guided_evolution/basic.py#L65)调用 `random()` 时会触发模块不可调用的错误，影响使用它的采样路径。
 
-## ADR-006　代理模型：手工描述符 + 多回归器横评
+[Group.calcDis](ALICE/alice/ALICE/step4_function_guided_evolution/group.py#L95)对一维字符串种群使用二维索引，在这种输入下调用会失败；主进化路径并未据此证明会调用它，不能把它写成所有运行的必经错误。GA 的升序排列后覆盖低分个体、保留末尾高分个体的写法则符合其精英保留意图。
+
+## ADR-006　功能预测器使用描述符；原版比较回归器，ALICE-X 使用 AutoGluon
 
 **背景**
 
-ADR-004 的对比打分不给绝对量纲，但漏斗末端要在真实量纲上排序、设阈值。
+参考分数与实验标签量纲不同。功能预测器为候选提供生产适应度或受体富集的预测，既用于原版筛选，也用于 ALICE-X 的模型引导阶段。
 
-**选项**
+**可比较方案**
 
-特征表示：
-1. one-hot（7×20 = 140 维）
-2. 预训练语言模型的 embedding（4096 维/位）
-3. 手工理化描述符（约 674 维）
+特征可比较 one-hot、语言模型表征及理化描述符；模型可比较预设算法、交叉验证或自动调参。不能仅凭输入维数认定某方案必然失败，也不能把描述符加树模型称为对所有小数据任务最稳的组合。
 
-模型：
-4. 预设一个模型（比如直接上 XGBoost）
-5. 多个模型横评 + 交叉验证
+**实现事实**
 
-**决定**
+[cal_pep](ALICE/alice/ALICE/tools/parameters.py#L16)组合氨基酸组成、二肽组成、自相关、CTD、序列顺序、伪氨基酸组成和基础性质等描述。原版本次复现实际得到 **674 列**特征，并保持原特征顺序。
 
-特征取方案 3，模型取方案 5：7 个回归器 × 5 折交叉验证，看 Pearson 挑。
+三个原版训练脚本配置 KNN、SVR、BayesianRidge、RandomForest、GradientBoosting、AdaBoost、XGBoost，以及五折划分和六项指标。[Ly6a 训练脚本](ALICE/alice/ALICE/evaluation/ly6a/Train_Target_Enrichment_LY6A.py#L64)
 
-```
-特征工程：
-  alice/ALICE/tools/parameters.py:16
-        cal_pep(seq)   ← 把 8 类描述符拼成一个 dict
-  alice/ALICE/tools/featured_data_generated/
-        AAComposition.py       氨基酸组成 + 二肽组成
-        Autocorrelation.py     Moreau-Broto 归一化自相关（lamba=5）
-        CTD.py                 组成 / 转换 / 分布
-        PseudoAAC.py           伪氨基酸组成（lamda=4）+ 两性伪氨基酸组成
-        QuasiSequenceOrder.py  准序列顺序耦合数（maxlag=5）
-        BasicDes.py            基础理化性质
+论文补充方法明确报告按综合性能选择 **Gradient Boosting**，超参数和指标见 Table S3–S6；本次实际加载的三个原版模型也都是 `GradientBoostingRegressor`。不能写成“完全没有记录最终选择了哪个模型”。但训练脚本本身没有完整展示从横评结果自动选择、汇总重训并导出三个最终命名模型的过程。[补充材料，第 8 页](ALICE/reproduction/references/Document_S1.pdf#page=8) · [实际加载记录](ALICE/reproduction/results/original/metrics.json)
 
-训练（三个任务，三个结构完全相同的脚本）：
-  alice/ALICE/evaluation/production fitness/Train_Production_Fitness.py
-  alice/ALICE/evaluation/ly6a/Train_Target_Enrichment_LY6A.py
-  alice/ALICE/evaluation/ly6c1/Train_Target_Enrichment_LY6C1.py
-        :66  KNN / SVR / BayesianRidge / RandomForest /
-             GradientBoosting / AdaBoost / XGBoost
-        :79  KFold(5, shuffle=True, random_state=42)
-  alice/ALICE/tools/metrics.py
-        reg_scores()   ← rmse / pearson / spearman / CI / R² / MedAE
+[ALICE-X 训练入口](ALICE/alice_x/ranking/s2_auto_gb_regressor.py#L34)使用 AutoGluon 的 GBM 搜索，默认 `num_trials=120`，同时有时间限制和兼容性分支；这不是实际完成 120 次试验的保证。其 `test_*` 数据被传入 `tuning_data`，本次复测不能作为独立测试性能。
 
-第二轮改为 AutoML：
-  alice_x/ranking/s2_auto_gb_regressor.py   AutoGluon GBM + HPO（num_trials=120）
-  alice_x/ranking/datapack/*.csv            6134 行 × 674 维（仓库里就有）
-```
+随库数据的精确规模以[复测审计](ALICE/reproduction/results/models/metrics.json)为准：fitness 训练可用 6131 行、hTfR1 训练可用 6134 行，两任务调参集各 256 行。四张 CSV 各有 676 列，包括序列标识、674 列描述符和标签；加载模型实际要求的输入特征分别为 645 和 648 列。不能把所有表格都写成“6134 行×674 维”。
 
-**为什么**
+**代价与已确认的实现问题**
 
-- one-hot 太稀疏，树模型学不到"这两个字母化学性质接近"这种信息。
-- 预训练 embedding 维度过高，6×10³ 样本撑不住。
-- 674 维描述符里已经编码了疏水性、电荷、分子量、序列顺序等物理量，
-  配 6000 样本 + 树模型是小数据上最稳的组合。
-- 不预设模型、让交叉验证说话 —— 小样本上这是正确做法。
+- 原版描述符函数没有显式特征选择；ALICE-X 模型保留的列少于原描述符数，不能把这一描述推广为整个仓库没有任何特征处理。
+- [原版训练循环](ALICE/alice/ALICE/evaluation/ly6a/Train_Target_Enrichment_LY6A.py#L28)在每折内部重置指标列表，循环后的 `mean` 只覆盖最后一折。应限定为当前脚本的输出问题，不能据此断定论文表格也这样计算。
+- 同一脚本写预测文件时用外层最后一折的 `test` 决定遍历次数，而真正取值使用当前折索引；当前 KFold 划分在折大小不等时会少写较大折的部分预测。这不等于所有写出的标签都来自错误折。
+- 多处把换行写成 `'/n'`，会破坏预期 CSV 行结构。
+- 这些旧训练脚本的问题不改变本次已完成的“加载作者模型再预测”结果，也不证明从头重训已复现。
 
-**代价**
-
-- 674 维描述符里大量冗余和共线，原仓库**没有特征选择步骤**。
-- 三个训练脚本是**复制粘贴**的（除了输入路径和标签列名完全相同），
-  任何修改要改三处。
-- 训练脚本的 bug：`rmse, pearson, ... = [], [], ...` 在每个 fold 内部重新初始化
-  （`Train_Target_Enrichment_LY6A.py:29`），所以最后 `np.mean(rmse)`
-  **只统计了最后一折** —— 打印出来的"5 折平均"是假的。
-- `preds_score.csv` 的写入循环里用了外层泄漏的 `test` 变量
-  （`:50  for num, sc in enumerate(y[test])`），而不是 `tst_data[iter_]`。
-- 换行符写成了 `'/n'` 而不是 `'\n'`（多处），输出的 csv 是一整行。
-- 没有记录最终选了哪个模型 —— `checkpoint/.../LY6A_model.sav` 是哪个回归器，
-  代码里查不到。
-
----
-
-## ADR-007　生成器：预训练后冻结，只训小 LSTM
+## ADR-007　编码器预训练后供生成网络使用；须区分原版与 ALICE-X
 
 **背景**
 
-进化需要初始种群。纯随机 7-mer 里绝大多数一开始就不合格，
-要烧掉很多代才能拉回可用区域。希望初始种群就"像真实文库里的序列"。
+生成模块为筛选和搜索提供候选。原版论文的语义训练集为 **72,753 条**；ALICE-X 随库 `semantic_tuning_data.csv` 有 **1388 行**。后者不能作为“整个原版只用约 1400 条训练”的依据。[补充材料，第 3 页](ALICE/reproduction/references/Document_S1.pdf#page=3)
 
-但真实文库标注数据只有约 1400 条。
+**可比较方案**
 
-**选项**
+可比较随机候选、从头训练生成模型、冻结预训练编码器或联合微调。公开代码能说明具体入口如何连接模型；不能据样本数直接断言其他方案必然失败。
 
-1. 纯随机初始化种群
-2. 从零训一个 Transformer 生成器（1400 条样本）
-3. 在无标注语料上预训练，然后**全参数微调**
-4. 在无标注语料上预训练，**冻结**，只训一个小 LSTM 生成器
+**实现事实**
 
-**决定**
+[预训练配置](ALICE/alice/ALICE/step1_pretrain/param.json)为隐藏维度 4096、词表 22、32 个注意力头和 1 个 Transformer 层。它包含上下文自注意力与前馈网络，即使冻结也仍是上下文编码器，不能称为固定的氨基酸查找表。
 
-取方案 4。
+论文说明预训练使用长度不超过 50 的序列，并解释其考虑；当前数据脚本采用 `MAX_LEN=50`。不能另行断言其唯一原因是“下游只有 7 位，所以长程依赖无用”。[补充材料，第 3 页](ALICE/reproduction/references/Document_S1.pdf#page=3)
 
-```
-预训练（唯一吃 GPU 的部分）：
-  alice/ALICE/step1_pretrain/param.json
-        hidden size 4096 / vocab 22 / attn heads 32 / n layers 1 / dropout 0.1
-  alice/ALICE/step1_pretrain/attention.py      Attention / MultiHeadedAttention / TransformerBlock
-  alice/ALICE/step1_pretrain/util_layers.py    PositionwiseFeedForward / SublayerConnection
-  alice/ALICE/step1_pretrain/minibert.py       BERTEmbedding / BERT / MaskedRoberta
-  alice/ALICE/step1_pretrain/optim_schedule.py warmup 调度
-  alice/ALICE/step1_pretrain/msk_datasets_construction.py
-        :109  MAX_LEN = 50          ← 刻意不用 512
-        :128  MaskSequence(0.3)     ← 掩码率 0.3，不是 BERT 的 0.15
-  alice/ALICE/step1_pretrain/pretrain_roberta.py   class BERTTrainer + 训练循环
+[原版语义入口](ALICE/alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py#L277)加载编码器并设置 `requires_grad=False`。[Generator](ALICE/alice/ALICE/tools/SeqGAN.py#L14)还包含投影层、双向 LSTM、输出层和 highway，训练流程也更新判别器，所以“只训练一个小 LSTM”“预训练是唯一使用 GPU 的部分”均不准确。
 
-语义微调：
-  alice/ALICE/tools/SeqGAN.py
-        :14   class Generator       冻结 BERT 当 embedding → Linear → BiLSTM → highway
-        :149  class Discriminator   多尺度 Conv1d(k=1,3,5,7) + ResBlock×5 + highway
-  alice/ALICE/tools/utils.py  gumbel_softmax()
-  alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py:281
-        ★ for para in pretrain_pth.parameters(): para.requires_grad = False
-  alice/ALICE/step2_semantic_tuning/Inference_SeqGAN.py
-        20 轮 × gen_num=1000 → 约 2 万条候选 → infer_gen_seqs.csv
-```
+**代价与已确认的实现问题**
 
-**为什么**
+1. **冻结不防止显式重初始化。** 若旧入口解析到仓库的 `tools/SeqGAN.py`，`Generator.init_params()` 会遍历包括 `self.emb` 在内的参数并写入随机值；随后训练脚本的 `generator.apply(weights_init)` 又会处理其中的线性层。冻结只阻止梯度更新，不阻止这种写入。因此不能保证此路径保留了加载的预训练参数，也不能据此反推已发布模型的实际训练历史。[生成器初始化](ALICE/alice/ALICE/tools/SeqGAN.py#L25) · [训练初始化](ALICE/alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py#L42)
 
-- 方案 2 必死：1400 条样本训不出 Transformer。
-- 方案 3 也会过拟合：hidden=4096 的模型用 1400 条样本做全参微调，参数量碾压数据量。
-- 方案 4 把大模型降级为**固定的 embedding 查找表** —— 它提供的价值是
-  "化学性质相近的氨基酸，向量也相近"，而不是"懂蛋白质"。
-  真正学习"什么像衣壳序列"的是那个小 LSTM。
-- `MAX_LEN=50`（而非 512）是有意的：下游只处理 7 个字母，
-  学长程依赖无用，短序列能把 batch 开到 512，训得快得多。
+2. **掩码标签与损失口径不一致。** 主程序传入 `MaskSequence(0.3)`，其中 80% 换成 X、20% 保留、0% 随机替换；保留分支提前 `continue`，标签仍为 0。真实字符中期望 24% 有非零恢复标签，6% 被选中但保留，另 70% 未选中。当前 `CrossEntropyLoss()` 没有忽略 0，所以后两类及 PAD 位置仍以类别 0 计损，不能写成“6% 不计损”。准确率则只统计非零标签。[数据构造](ALICE/alice/ALICE/step1_pretrain/msk_datasets_construction.py#L37) · [损失与准确率](ALICE/alice/ALICE/step1_pretrain/pretrain_roberta.py#L138) · [PyTorch 损失定义](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html)
 
-**代价**
+3. **LogSoftmax 后再用交叉熵是冗余，不能单独判成错误。** 在精确计算下 `logsoftmax(logsoftmax(z)) = logsoftmax(z)`；需要关注的是上一条未忽略 0 标签的真实目标变化。
 
-- **"semantic tuning"这个命名有误导性**：被微调的是生成器，不是语言模型。
-- 预训练只有 **1 层** transformer（`param.json: "n layers": 1`），
-  能学到的"蛋白语法"非常有限 —— 它基本就是个带位置编码的 embedding。
-- `pretrain_roberta.py` 里有三处实现偏差，**代码里没有任何说明**：
-  1. `MaskedRoberta.forward` 已经 `LogSoftmax`，外层又用 `CrossEntropyLoss`
-     （`:69`）—— **double log-softmax**。
-  2. 损失没有 `ignore_index=0`（`:68` 把 `NLLLoss(ignore_index=0)` 注释掉了，损失调用在 `:138`），
-     于是模型被训练成"在所有未掩码位置输出 `<PAD>`"。
-  3. `msk_stg=(0.8, 0.0, 0.2)` 下"随机替换"分支永远走不到
-     （`msk_datasets_construction.py:43`），
-     实际是 24% 位置换成 `X` 并计损、6% 位置原样保留且**不计损**，
-     而非 BERT 的 80/10/10。
-- **最严重的一处**：`Train_SeqGAN.py` 里
-  `g_loss = (g_loss_1 + g_loss_2)/2`，两项都是交叉熵 MLE，
-  **判别器的梯度从未传到生成器**。D 被训练、准确率被记录，
-  但 G 是纯 MLE 训练的 —— 所以这个"GAN"实际没有对抗。
-  若要忠实复现，这点必须知道；若要改进，需补 REINFORCE 或 Gumbel-ST 直通。
-- 这一层**可以整体跳过**：用 `alice_x/FE/data/infer_gen_seqs.csv`
-  （仓库里现成的 1000 条）顶替初始种群，ADR-004/005/006 照样跑。
+4. **原版旧入口的 G 更新没有判别器反馈。** `g_loss` 由真实样本和自采样样本的两项交叉熵组成，判别器项单独更新 D；硬采样、one-hot 和 `detach()` 没有把 D 的目标接入 G 更新。这个结论限定于旧的 `Train_SeqGAN.py`，不能推广为整个仓库的生成训练均无对抗项。[原版损失](ALICE/alice/ALICE/step2_semantic_tuning/Train_SeqGAN.py#L123)
 
----
+5. **ALICE-X 新入口已有可微对抗项。** `train_seqgan_htfr1.py` 在预热后使用 Gumbel-Softmax 直通采样，把判别器输出对应的 `g_adv_loss` 加入生成器损失。因此“必须给 ALICE-X 补上对抗梯度”不符合当前源码；已有损失连接也不等于整个训练入口已运行验证。[ALICE-X 生成器更新](ALICE/alice_x/finetuning/train_seqgan_htfr1.py#L295)
 
-## ADR-008　多目标用饱和变换，禁止线性加权
+   该入口也存在冻结后重新初始化的问题；其 [Generator.forward](ALICE/alice_x/finetuning/SeqGAN.py#L35)返回的是展平为 `[B*T,V]` 的 Gumbel-Softmax 概率，而采样函数按 logits 处理。默认批量为 10、前缀长度大于 1 时，[形状处理分支](ALICE/alice_x/finetuning/train_seqgan_htfr1.py#L145)还会把第一行复制给整批，未正确恢复各样本最后一个位置。因此不能将“已有对抗项”等同于“新入口已完整修好”。
+
+6. **预训练运行和保存还有限制。** 数据集写死 `.cuda()`；测试未切换 `eval()`；外层 10 次重建 trainer 会复用编码器但重建预测头、Adam 和调度器，每次内层训练 50 个 epoch；同名检查点会覆盖，保存的只有编码器，不含完整续训状态。[数据加载与主循环](ALICE/alice/ALICE/step1_pretrain/pretrain_roberta.py#L186)
+
+使用已发布候选可以跳过重新生成，但改变了复现范围；ALICE-X 的候选也不能直接当作原版相同靶标、相同来源的等价输入。其他进化模块的导入和实现问题仍需单独处理。
+
+## ADR-008　原版最终筛选结合排序、非单调正弦评分和固定阈值
 
 **背景**
 
-最终要把"生产适应度 + A 锁结合 + B 锁结合 + 对比分"合成一个数来排序。
+前置筛选和末端筛选都要使用多项分数，但不同阶段的公式、归一化范围和选择规则不同。
 
-**选项**
+**可比较方案**
 
-1. 线性加权求和
-2. 取最小值（硬 min）
-3. 凹的饱和变换后求和（如 `sin`，在接近峰值处封顶）
+线性加权、最小值、非线性变换和多目标排序都可以作为方案；没有证据支持“线性加权在末端必然失败”或“必须禁止线性加权”。
 
-**决定**
+**实现事实**
 
-漏斗**前段**用方案 1 做粗筛（便宜、够用），**末端**用方案 3 做精排。
+[RankFiltPro](ALICE/alice/ALICE/step3_rankfiltpro/RankFiltPro.py#L7)使用线性加权粗筛；末端 EA 对当前进入该步骤的候选做逐列 min-max 归一化，再计算：
 
-```
-粗筛（前段，线性加权可接受，因为后面还有硬阈值兜）：
-  alice/ALICE/step3_rankfiltpro/RankFiltPro.py:7
-        filter_score = 0.3*Prod_Fit + 0.35*LY6A + 0.35*LY6C1
-  :8    → 排序取 Top1000
-
-精排（末端，必须用饱和变换）：
-  alice/ALICE/step5_elite_ascendancy/6-EliteAscendancy.py:22
-        EA_Score = 3.5*sin(Target_LY6C1_Enri_norm * 1.85)
-                 + 3.5*sin(Target_LY6A_Enri_norm  * 2.70)
-                 + 0.1 *Prod_Fit_norm
-                 + 0.15*FE_score_norm
-  :42   阈值 EA_Score >= 6.7
-
-硬阈值漏斗：
-  4-FE_score_Filter.py      FE_score  排序 → Top500
-  5-Prod_Fit_Filter.py      Prod_Fit  排序 → Top100
-  7-multi-target-binding.py multi_tar = 0.5*A + 0.5*B，保留 >= -1
-  8-delete_reported_seqs.py 剔除 3 条已报道序列 → output/EA/ALICE_TOP.csv
+```text
+EA = 3.5*sin(1.85*C_norm) + 3.5*sin(2.70*A_norm)
+     + 0.1*Prod_Fit_norm + 0.15*FE_score_norm
+保留 EA >= 6.7
 ```
 
-**为什么用 sin**
+其中 `A` 对应 Ly6a，`C` 对应 Ly6c1。[EA 原始函数](ALICE/alice/ALICE/step5_elite_ascendancy/6-EliteAscendancy.py#L13)
 
-`sin` 在接近峰值处**饱和**。系数 `2.70` 已超过 π/2 ≈ 1.571，
-意味着 A 锁的归一化分数越过峰值后**不再加分**。两个 3.5 权重的饱和项相加，
-效果是一个**平滑的 AND（软 min）**：
+**正弦项在实际区间内先升后降，不是单调饱和函数，也不等同于 soft-min。** 两个分量的峰值分别位于 `C_norm≈0.8491` 和 `A_norm≈0.5818`；超过峰值后分数下降。因此原始预测值更大，有时反而降低 EA。
 
-> "两把锁都够好"的总分 **远高于** "一把极好、另一把很差"。
+本次输入和规则的实际行数为：
 
-`Prod_Fit` / `FE_score` 只给 0.1 / 0.15 的小权重，因为它们已经在
-第 4、5 号脚本被硬阈值筛过一遍了 —— 不需要在这里再竞争。
+```text
+输入 1000
+→ 三次模型预测后仍为 1000
+→ FE 排序取 500
+→ 生产适应度排序取 100
+→ EA 阈值后 12
+→ multi_tar 阈值后 11
+→ 指定序列排除后 8
+```
 
-**代价**
+第 4、5 步是按名次保留固定数量，不能称为固定数值阈值。第 7 步对两个原始靶标预测取均值并保留 `>=-1`，排序字段确为 Ly6c1；这能说明实现选择不同，不能仅据此判定排序字段是笔误。本次 12 条没有重复，该阈值实际剔除了 1 条。[筛选记录](ALICE/reproduction/results/original/selection_counts.csv) · [联合筛选代码](ALICE/alice/ALICE/step5_elite_ascendancy/7-multi-target-binding.py)
 
-- **线性加权必然失败**（如果用在末端）：一项极好 + 一项极差，
-  可以和两项都不错得同样的分，而优化器一定会选前者，因为堆单项更容易。
-  这就是为什么末端不能沿用 `RankFiltPro` 那套权重。
-- `1.85` / `2.70` / `3.5` / `0.1` / `0.15` / `6.7` 全是**手调的魔法数**，
-  原仓库没有任何推导或调参记录。
-- `6.7` 这个阈值是**反推出来的**：它的作用是让最终剩下恰好能进实验的条数。
-  这是合理的工程做法（实验通量是硬约束），但必须说清楚，否则看起来像过拟合。
-- `normalize_column` 是 min-max 归一化（`6-EliteAscendancy.py:17`），
-  **依赖当前批次的极值** ⇒ 换一批候选，同一条序列的 EA_Score 会变。
-  不同轮次之间的 EA_Score **不可比**。
-- `7-multi-target-binding.py` 里 `multi_tar >= -1` 几乎不过滤任何东西，
-  而且排序用的是 `Target_LY6C1_Enri` 而非刚算出的 `multi_tar` —— 可能是笔误。
+**代价与边界**
 
----
+min-max 依赖当前候选的极值，同一序列在不同候选批次可能得到不同 EA，跨批比较需统一标尺。系数及阈值在代码中固定，但没有查到“为了恰好留下八条而反推 6.7”的证据；应删除这一作者动机断言。最终数量还由前后多道规则共同决定。
 
-## ADR-009　第二轮把目标从"像已知"反转为"远离已知"
+本次最终八条与论文 Table S13 的序列集合一致，预测生产适应度符合论文舍入值；这验证的是已发布输入与模型的筛选重放。[逐条核对](ALICE/reproduction/results/original/paper_table_s13_comparison.csv)
+
+## ADR-009　ALICE-X Stage 2 使用预测和距离项，具体行为取决于模式
 
 **背景**
 
-ADR-004 的代价暴露了：优化"像已知的好序列"，优化到底就是把参考序列抄一遍。
-直接证据是 `8-delete_reported_seqs.py` 不得不硬删三条已报道序列。
+当前 Stage 2 源码在候选功能预测之外加入与参考集、上一代的距离项。它体现了功能分数和序列差异的组合，但“先进入训练分布后模型就最可信”“因此消除了外推风险”没有被代码或本次实验验证。
 
-**选项**
+论文补充方法 §7.4.2 给出了两阶段的设计解释：讨论熟悉序列模式导致的局部最优和过早收敛，将功能整合与后续探索分开。应把它表述为论文陈述的动机，而不是从黑名单规则反推的研发历史，也不代表 Stage 1 保证了训练分布覆盖。[补充材料，第 25 页](ALICE/reproduction/references/Document_S1.pdf#page=25)
 
-1. 继续用 ADR-004 的打分，靠事后黑名单剔除已知序列
-2. 在打分里加新颖性惩罚项（一个阶段内平衡"像"和"不像"）
-3. **两阶段**：Stage 1 仍用"像好的"把种群拉进可行区，
-   Stage 2 换成"预测分高 + 远离参考集 + 远离上一代"
+**可比较方案**
 
-**决定**
+可比较仅预测分数、预测分数加距离项、分阶段优化或其他多目标方式。不能把原版黑名单规则与 Stage 2 的出现之间写成已经证明的研发因果。
 
-取方案 3。
+**实现事实**
 
-```
-  alice_x/FE/src/evaluation.py
-        :142  evaluate()                  ← Stage 1：仍是"像好的 − 像坏的"
-        :184  hamming()
-        :188  ref_distance_norm()         ← 到 Ref+/Ref- 的最小归一化距离
-        :200  diversity_prev_norm()       ← 到上一代的最小归一化距离
-        :207  evaluate_stage2_scalar()    ← ★ Stage 2 奖励
-              reward  = fit_pred + ht_pred
-                      + w_div * div_prev      离上一代远
-                      + w_ref * ref_dist      离参考集远
-              penalty = w_ref_pen*(1-ref_dist)
-                      + w_fit_pen*max(0, fit_base - fit_pred)
-                      + w_ht_pen *max(0, ht_base  - ht_pred)
-              score   = clamp(reward - penalty, 0, 1)
-  alice_x/FE/src/stage2_evolve.py
-        :82   stage2_run_one_mode()  ← 7 种 reward 组合模式（sum/min/+div/+ref/all）
-        :107  fit_base / ht_base 取初始种群预测值的分位数当基线
-  code_for_analysis/plot_reward_efficacy.py   ← 不同 reward 模式的效果对比（消融）
+[stage2_run_one_mode](ALICE/alice_x/FE/src/stage2_evolve.py#L82)调用 [evaluate_stage2_scalar](ALICE/alice_x/FE/src/evaluation.py#L207)，按模式决定奖励。
+
+```text
+默认 sum： reward = fit_pred + ht_pred
+all 模式： reward = fit_pred + ht_pred + w_div*div_prev + w_ref*ref_dist
+
+penalty = w_ref_pen*(1-ref_dist)
+        + w_fit_pen*max(0, fit_base-fit_pred)
+        + w_ht_pen*max(0, ht_base-ht_pred)
+
+score = clamp(reward-penalty, 0, 1)
 ```
 
-**为什么**
+评价函数显式接受 8 个模式名称：`sum`、`min`、`rank_sum`、`sum+div`、`sum+ref`、`min+div`、`min+ref`、`all`。其中 `rank_sum` 当前与 `sum` 同公式，并未真正计算排名。[主入口](ALICE/alice_x/FE/src/stage2_evolve.py#L194)只运行 `modes=["sum"]`，也没有暴露选择模式的命令行参数。
 
-- 方案 1 是打补丁：黑名单只能剔除你**已知**的已报道序列，
-  对"实质相同但差一两个字母"的序列无效。
-- 方案 2 的两个方向在同一个标量里互相抵消，权重极难调。
-- 方案 3 把两个矛盾目标**在时间上分开**：先拉进来，再推出去。
-  并且 Stage 2 的预测分来自 ADR-006 的回归模型，
-  此时种群已经在训练分布附近，模型可信度最高 ——
-  **正好绕开了 ADR-004 当初否掉"模型当适应度"的那个理由**。
+默认 `sum` 没有上一代距离奖励；虽然仍计算并输出 `div_prev`，它不参与该模式的分数。参考距离惩罚仍然存在。`ref_dist` 是到正负参考并集的最小归一化 Hamming 距离，`div_prev` 是到上一代的最小归一化 Hamming 距离。
 
-**代价**
+**代价与已确认的实现问题**
 
-- 引入 5 个新权重（`w_div` `w_ref` `w_ref_pen` `w_fit_pen` `w_ht_pen`），
-  默认值 `0.25/0.25/0.35/0.3/0.3` 仍是手调的。
-- Stage 2 依赖 ADR-006 的模型预测，**又把模型外推的风险请回来了** ——
-  靠 `fit_base`/`ht_base` 分位数基线惩罚来约束，但这只是软约束。
-- `minmax01()` 对每代预测值重新归一化（`stage2_evolve.py:67`），
-  所以 **跨代的 reward 不可比**，训练曲线的含义需要小心解读。
-- `stage2_evolve.py:33` 的返回标注写成 `pd.DtaFrame`（拼写错误），
-  **模块 import 即报 AttributeError** —— 这个文件现在跑不起来，必须先修。
-- `modes = ["sum"]`（`:194`）把 7 种模式写死成只跑一种，
-  README 里宣传的其它 6 种模式需要改代码才能用。
+- `fit_base`、`ht_base` 来自初始种群的**原始预测值**分位数，但每代传给评分函数的是 min-max 后的 `[0,1]` 预测。二者直接相减存在尺度不一致，不能把它描述为已经验证有效的功能保持约束。[基线](ALICE/alice_x/FE/src/stage2_evolve.py#L102) · [归一化和调用](ALICE/alice_x/FE/src/stage2_evolve.py#L124)
+- 每代单独归一化导致分数标尺变化，`clamp` 还可能把多个高分候选截为相同值；跨代奖励不能直接当作固定物理量比较。
+- `pd.DtaFrame` 是类型注解拼写错误，在当前 Python 3.10 的即时注解求值下，若执行到该定义会报错；但 `mixture.py` 导入的 `GA.py` 缺失可能更早阻断 Stage 2。另一个缺失文件 `SA.py` 影响 Stage 1 入口，不能混作同一调用链，也不能认定第一个错误必然是类型注解拼写。[定义位置](ALICE/alice_x/FE/src/stage2_evolve.py#L33)
+- [评价器构造函数](ALICE/alice_x/FE/src/evaluation.py#L70)先读取相对路径 `./datapack/sequences.json`；在 FE 的 `src/` 目录直接启动时，该默认文件不存在，即使后续准备另设参考集，也需要先处理初始化路径。
+- [plot_reward_efficacy.py](ALICE/code_for_analysis/plot_reward_efficacy.py)分析单个实验目录中的距离分组与后续变化；它本身不是同时重跑、比较多个奖励模式的消融实验。
+- 仓库保存的 epoch 预测表与当前入口输出的命名和预测尺度存在差别，不能直接用存档图表证明当前 Stage 2 入口已经完整运行通过。本次仅重算这些已存档数据。
 
----
+## 附录 A　常量与配置入口索引
 
-## 附录 A　"决策只存在于常量里"索引
+仓库有 `param.json`、参数对象、构造参数、setter 和命令行选项；问题是配置分散，而非“没有任何配置层”。
 
-原仓库没有配置层，所有决策散落在代码常量中。想改题目时按此表查：
+| 内容 | 入口 |
+|---|---|
+| 原版 7-mer、词表和生成规模 | [tools/parameters.py](ALICE/alice/ALICE/tools/parameters.py#L52) |
+| 预训练结构 | [step1_pretrain/param.json](ALICE/alice/ALICE/step1_pretrain/param.json) |
+| 预训练长度及实际掩码参数 | [数据主程序](ALICE/alice/ALICE/step1_pretrain/msk_datasets_construction.py#L108) |
+| 原版搜索算子、固定进化循环 | [FE 入口](ALICE/alice/ALICE/step4_function_guided_evolution/function_guided_evolution.py#L17) |
+| EDG 种群比例 | [mixture.py](ALICE/alice/ALICE/step4_function_guided_evolution/mixture.py#L20) |
+| 比对 gap 与 extend | [MSAEva 初始化](ALICE/alice/ALICE/step4_function_guided_evolution/evaluation.py#L51) |
+| EA 系数及阈值 | [EA 评分](ALICE/alice/ALICE/step5_elite_ascendancy/6-EliteAscendancy.py#L20) |
+| ALICE-X 搜索超参数 | [ALICE-X FE 入口](ALICE/alice_x/FE/src/function_guided_evolution.py) |
+| ALICE-X Stage 2 模式和权重 | [Stage 2 主程序](ALICE/alice_x/FE/src/stage2_evolve.py#L171) |
 
-| 决策 | 常量 | 位置 |
+## 附录 B　导入、路径及复现范围
+
+1. **扁平导入依赖正确的模块搜索路径。** 多个入口使用 `import parameters`、`from metrics import *` 等，相关文件位于不同目录。需要核对入口和 `sys.path`；仅把 `tools/` 加入路径并不能解决所有依赖，例如 `tools/minibert.py` 引用的 `attention.py` 及其依赖 `util_layers.py` 位于原版 `step1_pretrain/`。
+
+2. **缺少 `__init__.py` 不自动构成错误。** Python 支持隐式命名空间包。扁平的 `import parameters` 与 `import tools.parameters` 对路径有不同要求，可通过明确包结构和导入方式改善，但不是简单添加一个文件就能保证全部入口可运行。[Python 导入规则](https://docs.python.org/3.10/reference/import.html#namespace-packages)
+
+3. **`evaluation` 同名风险取决于实际搜索路径和缓存。** 直接执行 step4 的脚本通常会将脚本目录置于搜索路径前部；同时能找到该目录下的 `evaluation.py` 时，不能仅因当前工作目录是 `alice/ALICE/` 就断言导入到了命名空间目录。应检查实际模块来源及 `sys.modules`，再决定是否统一包式导入或重命名。
+
+4. **区分修正文档与修复训练代码。** 本文记录公开实现的已确认问题，没有宣称这些未执行的训练、进化模块已经修好。已有复现脚本采用作者提供的模型和输入，并保留实际使用的特征顺序、评分公式及筛选阈值。
+
+## 附录 C　与本次复现结果的对应
+
+| 项目 | 已确认结果 | 边界 |
 |---|---|---|
-| 序列长度 7 | `train_len=7` / `seq_len=7` / `seqlen=7` / `start_end=(7,7)` | `tools/parameters.py:59,74,89`；`step4/function_guided_evolution.py:68`；`step2/Train_SeqGAN.py:282` |
-| 字母表 20 | `self.lib='ACDEFGHIKLMNPQRSTVWY'` | `step4/group.py:26` |
-| 词表 22（含 PAD/X） | `"vocab": 22` | `step1_pretrain/param.json` |
-| 预训练长度上限 50 | `MAX_LEN = 50` | `step1_pretrain/msk_datasets_construction.py:109` |
-| 掩码率 0.3 | `MaskSequence(0.3)` | `step1_pretrain/msk_datasets_construction.py:128` |
-| 大模型冻结 | `requires_grad = False` | `step2/Train_SeqGAN.py:281` |
-| 候选规模 2 万 | `gen_num=1000` × `range(20)` | `tools/parameters.py:88`；`step2/Inference_SeqGAN.py:16` |
-| 粗筛权重 | `0.3 / 0.35 / 0.35` | `step3_rankfiltpro/RankFiltPro.py:7` |
-| 粗筛保留 1000 | `.head(1000)` | `step3_rankfiltpro/RankFiltPro.py:8` |
-| 进化代数 11 | `total_epoch = 11` | `step4/function_guided_evolution.py:87` |
-| 默认算子 EDG | `default='EDG'` | `step4/function_guided_evolution.py:17` |
-| EDG 配比 | `r_eda=0.3, r_ga_copy=0.2` | `step4/mixture.py:20` |
-| GA 变异/复制率 | `rmutate=0.3, rcopy=0.2` | `step4/GA.py:33-34` |
-| EDA 精英率/平滑 | `rbest=0.5, alpha=0.6`（被 EDG 覆盖为 1） | `step4/EDA.py:21-22`；`step4/mixture.py:22` |
-| gap 罚分 | `gap=-4, extend=-2` | `step4/evaluation.py:53-54` |
-| EA Score 系数 | `3.5 / 1.85 / 2.70 / 0.1 / 0.15` | `step5/6-EliteAscendancy.py:22-25` |
-| EA 阈值 | `>= 6.7` | `step5/6-EliteAscendancy.py:42` |
-| 漏斗各级 | `500 → 100` | `step5/4-...py:4`；`step5/5-...py:4` |
+| 原版八步筛选 | 最终 8 条序列与 Table S13 集合一致，预测值符合论文舍入精度 | 使用作者公开输入及已训练模型 |
+| ALICE-X 模型复测 | 24 项参考指标均在 `1e-6` 容差内；最大差约 `1.11e-16` | 使用上游调参集，不是新的独立测试 |
+| Figure 6F 相关性复算 | 选用 `huTfR1fc_log2_enrichment` 列时 `r=0.522840787`，舍入为 `0.523` | 原绘图脚本另一列给出 `0.423468353`；具体实验列映射尚未完全确认 |
+| 从头预训练、生成、完整进化及湿实验 | 本次未重新执行 | 不可将源码分析或存档结果当成重训成功 |
 
-## 附录 B　复现前必须解决的三个结构性问题
+详见[复现报告](ALICE/复现报告.md)、[验证记录](ALICE/reproduction/verification.json)和[运行说明](ALICE/reproduction/README_复现说明.md)。
 
-1. **没有任何 `__init__.py`，却跨目录 import 扁平模块名。**
-   `step4/function_guided_evolution.py:13 import parameters`、
-   `step5/1-*.py:9 from metrics import *`、
-   `evaluation/ly6a/*.py:8 from metrics import *`
-   —— 这些模块都在 `alice/ALICE/tools/`。必须把 `tools/` 加进 `PYTHONPATH`。
-
-2. **两个脚本的 import 风格不一致。**
-   `step2/Train_SeqGAN.py:13` 用 `import parameters`（扁平），
-   `step2/Inference_SeqGAN.py:8` 用 `import tools.parameters`（包式）。
-   这两个脚本需要不同的 `sys.path` 配置。
-
-3. **名字冲突：`step4/evaluation.py` 与 `evaluation/` 目录同名。**
-   `step4/group.py:1` 写的是 `import evaluation as eva`。
-   若以 `alice/ALICE/` 为工作目录运行，`import evaluation` 可能解析到那个
-   **目录**（隐式命名空间包）而非 `step4/evaluation.py`，
-   报一个很难定位的 `AttributeError: module 'evaluation' has no attribute 'MSAEva'`。
-
-> 修法：加 `__init__.py` 做成真包、改用相对导入、把 `step4/evaluation.py`
-> 改名为 `scoring.py`。
