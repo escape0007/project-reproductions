@@ -617,5 +617,3 @@ ADR-004 的代价暴露了：优化"像已知的好序列"，优化到底就是�
    **目录**（隐式命名空间包）而非 `step4/evaluation.py`，
    报一个很难定位的 `AttributeError: module 'evaluation' has no attribute 'MSAEva'`。
 
-> 修法：加 `__init__.py` 做成真包、改用相对导入、把 `step4/evaluation.py`
-> 改名为 `scoring.py`。
