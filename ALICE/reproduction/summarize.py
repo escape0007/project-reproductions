@@ -91,7 +91,8 @@ def main():
             f"完整一键命令已成功重跑，缓存就绪后的三个阶段合计 {verification['full_run_seconds']:.3f} 秒。原版最终 CSV、两个模型预测 CSV 和分析指标 CSV 与首次运行逐字节一致。",
             f"24 项模型指标的最大参考差值为 {verification['model_reference_max_absolute_difference']:.3g}（既定绝对容差 1e-6）；独立标准库 Pearson 核验差值为 {verification['independent_pearson_absolute_difference']:.3g}。上游跟踪文件未修改。", "",
             "[验证记录](reproduction/verification.json) · [完整运行回执](reproduction/run_receipt_all.json)", ""]
-    report = "\n".join(lines).replace("](reproduction/", "](" + str(BASE) + "/")
+    # Keep links relative to the report so they work locally and on GitHub.
+    report = "\n".join(lines)
     (ROOT / "复现报告.md").write_text(report, encoding="utf-8")
 
 
